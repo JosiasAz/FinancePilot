@@ -11,7 +11,7 @@ import { Sidebar } from '../sidebar/sidebar';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, Navbar, MatSidenavModule,MatListModule,MatCardModule,MatToolbarModule, Sidebar],
+  imports: [CommonModule, RouterModule,MatSidenavModule,MatListModule,MatCardModule,MatToolbarModule],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.scss']
 })

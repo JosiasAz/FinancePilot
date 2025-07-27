@@ -1,0 +1,22 @@
+.layout-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+
+  app-sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    height: 100vh;
+    overflow-y: auto;
+    background-color: #f0f0f0;
+  }
+
+  .layout-content {
+    flex-grow: 1;
+    height: 100vh; // 👈 forçamos altura exata
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; // 👈 evita scroll global
+    padding: 0; // 👈 tiramos padding daqui
+  }
+}

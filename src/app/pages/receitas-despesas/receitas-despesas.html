@@ -1,62 +1,86 @@
-<app-navbar></app-navbar>
-<div class="filtros">
+<div class="topo">
+  <div class="filtros" [formGroup]="filtroForm">
     <mat-form-field appearance="fill">
-        <mat-label>Tipo</mat-label>
-        <mat-select [(ngModel)]="filtro.tipo">
-            <mat-option value="todos">Todos</mat-option>
-        </mat-select>
+      <mat-label>Tipo</mat-label>
+      <mat-select formControlName="tipo">
+        <mat-option value="todos">Todos</mat-option>
+        <mat-option value="receita">Receita</mat-option>
+        <mat-option value="despesa">Despesa</mat-option>
+      </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
-        <mat-label>Período</mat-label>
-        <mat-select [(ngModel)]="filtro.periodo">
-            <mat-option value="30">Últimos 30 dias</mat-option>
-        </mat-select>
+      <mat-label>Período</mat-label>
+      <mat-select formControlName="periodo">
+        <mat-option value="mes">Este mês</mat-option>
+        <mat-option value="semana">Esta semana</mat-option>
+        <mat-option value="hoje">Hoje</mat-option>
+      </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="fill">
-        <mat-label>Categoria</mat-label>
-        <mat-select [(ngModel)]="filtro.categoria">
-            <mat-option value="todas">Todas</mat-option>
-        </mat-select>
+      <mat-label>Categoria</mat-label>
+      <mat-select formControlName="categoria">
+        <mat-option value="todas">Todas</mat-option>
+      </mat-select>
     </mat-form-field>
+  </div>
+
+  <div class="acoes">
+    <button mat-flat-button color="primary" (click)="novoLancamento()">
+      <mat-icon>add</mat-icon> Lançamento
+    </button>
+    <button mat-stroked-button (click)="exportar()">
+      <mat-icon>file_download</mat-icon> Exportar
+    </button>
+  </div>
 </div>
 
-<div class="cards">
-    <div class="card receita">Receitas <strong>R$ {{ receitas | number:'1.2-2' }}</strong></div>
-    <div class="card despesa">Despesas <strong>R$ {{ despesas | number:'1.2-2' }}</strong></div>
-    <div class="card saldo">Saldo <strong>R$ {{ saldo | number:'1.2-2' }}</strong></div>
+<div class="resumo-cards">
+  <mat-card class="receita">
+    <h3>Receitas</h3>
+    <p>R$ {{ receitas | number:'1.2-2' }}</p>
+  </mat-card>
+  <mat-card class="despesa">
+    <h3>Despesas</h3>
+    <p>R$ {{ despesas | number:'1.2-2' }}</p>
+  </mat-card>
+  <mat-card class="saldo">
+    <h3>Saldo</h3>
+    <p>R$ {{ saldo | number:'1.2-2' }}</p>
+  </mat-card>
 </div>
 
-<div class="acoes-topo">
-    <button mat-raised-button color="primary">Lançamento</button>
-    <button mat-stroked-button>Exportar</button>
-</div>
+<table mat-table [dataSource]="data" class="tabela">
 
-<table class="tabela">
-    <thead>
-        <tr>
-            <th><mat-checkbox></mat-checkbox></th>
-            <th>Data</th>
-            <th>Descrição</th>
-            <th>Valor</th>
-            <th>Status</th>
-            <th>Ações</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let item of lancamentos">
-            <td><mat-checkbox></mat-checkbox></td>
-            <td>{{ item.data }}</td>
-            <td>{{ item.descricao }}</td>
-            <td>R$ {{ item.valor | number:'1.2-2' }}</td>
-            <td>
-                <span [ngClass]="'status ' + item.status">{{ item.status | titlecase }}</span>
-            </td>
-            <td class="acoes">
-                <button mat-icon-button><mat-icon>edit</mat-icon></button>
-                <button mat-icon-button><mat-icon>delete</mat-icon></button>
-            </td>
-        </tr>
-    </tbody>
+  <ng-container matColumnDef="descricao">
+    <th mat-header-cell *matHeaderCellDef> Descrição </th>
+    <td mat-cell *matCellDef="let row"> {{row.descricao}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="tipo">
+    <th mat-header-cell *matHeaderCellDef> Tipo </th>
+    <td mat-cell *matCellDef="let row"> {{row.tipo}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="valor">
+    <th mat-header-cell *matHeaderCellDef> Valor </th>
+    <td mat-cell *matCellDef="let row"> R$ {{row.valor | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef> Status </th>
+    <td mat-cell *matCellDef="let row"> {{row.status}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="acoes">
+    <th mat-header-cell *matHeaderCellDef> Ações </th>
+    <td mat-cell *matCellDef="let row">
+      <button mat-icon-button color="primary"><mat-icon>edit</mat-icon></button>
+      <button mat-icon-button color="warn"><mat-icon>delete</mat-icon></button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>

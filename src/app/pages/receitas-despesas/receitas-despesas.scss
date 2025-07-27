@@ -1,86 +1,82 @@
-.filtros {
+.topo {
   display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 1rem;
-}
+  margin-bottom: 1.5rem;
 
-.cards {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-
-  .card {
-    flex: 1;
-    padding: 1rem;
-    border-radius: 8px;
-    color: #333;
-
-    &.receita {
-      background-color: #d2f9d2;
-    }
-
-    &.despesa {
-      background-color: #ffd7d7;
-    }
-
-    &.saldo {
-      background-color: #c3dfff;
-    }
-
-    strong {
-      display: block;
-      font-size: 1.3rem;
-      margin-top: 0.5rem;
-    }
-  }
-}
-
-.acoes-topo {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.tabela {
-  width: 100%;
-  border-collapse: collapse;
-
-  th, td {
-    padding: 0.75rem;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-  }
-
-  .status {
-    padding: 0.3rem 0.8rem;
-    border-radius: 5px;
-    font-weight: 500;
-    font-size: 0.9rem;
-
-    &.pendente {
-      background: #ddd;
-      color: #555;
-    }
-
-    &.cancelado {
-      background: #ffc7c7;
-      color: #a00;
-    }
-
-    &.pago {
-      background: #b2f3b2;
-      color: #157c15;
-    }
-
-    &.aguardando {
-      background: #ffff9c;
-      color: #888500;
-    }
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
 
   .acoes {
     display: flex;
-    gap: 0.5rem;
+    gap: 1rem;
+    align-items: center;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+  }
+}
+
+.resumo-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+
+  mat-card {
+    padding: 1.2rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+
+    h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    p {
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    &.receita {
+      background: #e0f7fa;
+      color: #00796b;
+    }
+
+    &.despesa {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    &.saldo {
+      background: #f1f8e9;
+      color: #33691e;
+    }
+  }
+}
+
+.tabela {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+
+  th {
+    background: #f4f6f8;
+    font-weight: 600;
+  }
+
+  td, th {
+    padding: 0.75rem 1rem;
+  }
+
+  tr:hover {
+    background: #f9f9f9;
   }
 }
