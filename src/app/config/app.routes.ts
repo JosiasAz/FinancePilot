@@ -14,6 +14,7 @@ import { ReceitasDespesas } from '../pages/receitas-despesas/receitas-despesas';
 import { Manutencao } from '../pages/manutencao/manutencao';
 import { Admin } from '../admin/admin/admin';
 import { ContasBancarias } from '../pages/contas-bancarias/contas-bancarias';
+import { MetasVsRealizado } from '../pages/metas/metas';
 
 export const routes: Routes = [
   // ROTAS SEM LAYOUT
@@ -21,6 +22,7 @@ export const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'register', component: Register },
   { path: 'profile', component: Profile },
+  { path: 'admin', component: Admin },
 
   // ROTAS COM LAYOUT COMPARTILHADO
   {
@@ -32,8 +34,8 @@ export const routes: Routes = [
       { path: 'criarpedido', component: CriarPedido },
       { path: 'receita', component: ReceitasDespesas },
       { path: 'manutencao', component: Manutencao },
-      { path: 'admin', component: Admin },
-      { path: 'contas', component: ContasBancarias}
+      { path: 'contas', component: ContasBancarias},
+      { path: 'metas', component: MetasVsRealizado}
     ]
   },
 

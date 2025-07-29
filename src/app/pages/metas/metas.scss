@@ -1,0 +1,135 @@
+.container {
+  background-color: #e3edf7;
+  padding: 2rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    align-items: center;
+
+    h2 {
+      font-size: 1.8rem;
+      color: #083358;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      mat-icon {
+        font-size: 2rem;
+        color: #1976d2;
+      }
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+  }
+
+  .cards-metas {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: space-between;
+
+    mat-card {
+      flex: 1 1 300px;
+      max-width: 100%;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+
+      mat-card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+
+        mat-icon {
+          font-size: 1.4rem;
+        }
+
+        mat-card-title {
+          font-size: 1.1rem;
+          font-weight: bold;
+        }
+      }
+
+      &.receita mat-card-title { color: #1976d2; }
+      &.despesa mat-card-title { color: #e53935; }
+      &.lucro mat-card-title { color: #388e3c; }
+    }
+  }
+
+  .grafico-wrapper {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    position: relative;
+    height: 360px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+
+  .alerts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .alert {
+      flex: 1 1 300px;
+      padding: 1rem;
+      border-radius: 8px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &.error {
+        background-color: #fdecea;
+        color: #c62828;
+      }
+
+      &.warning {
+        background-color: #fff4e5;
+        color: #f57c00;
+      }
+
+      mat-icon {
+        font-size: 1.4rem;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+    }
+
+    .cards-metas {
+      flex-direction: column;
+    }
+
+    .alerts {
+      flex-direction: column;
+    }
+  }
+}

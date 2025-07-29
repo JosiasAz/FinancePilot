@@ -1,0 +1,67 @@
+<div class="container">
+  <div class="header">
+    <h2>
+      <mat-icon class="icon">insights</mat-icon>
+      Metas vs Realizado
+    </h2>
+    <div class="actions">
+      <button mat-raised-button color="primary">
+        <mat-icon>add</mat-icon>
+        Nova Meta
+      </button>
+    </div>
+  </div>
+
+  <div class="cards-metas">
+    <mat-card class="card receita">
+      <mat-card-header>
+        <mat-icon>trending_up</mat-icon>
+        <mat-card-title>Receita</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Meta: <strong>R$ 20.000</strong></p>
+        <p>Realizado: <strong>R$ 18.500</strong></p>
+        <p>Atingido: <span>92,5%</span></p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="card despesa">
+      <mat-card-header>
+        <mat-icon>money_off</mat-icon>
+        <mat-card-title>Despesas</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Meta: <strong>R$ 10.000</strong></p>
+        <p>Realizado: <strong>R$ 9.800</strong></p>
+        <p>Atingido: <span>98%</span></p>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="card lucro">
+      <mat-card-header>
+        <mat-icon>account_balance_wallet</mat-icon>
+        <mat-card-title>Lucro</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <p>Meta: <strong>R$ 10.000</strong></p>
+        <p>Realizado: <strong>R$ 8.700</strong></p>
+        <p>Atingido: <span>77,5%</span></p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="grafico-wrapper">
+    <canvas id="graficoMetas"></canvas>
+  </div>
+
+  <div class="alerts">
+    <div class="alert error">
+      <mat-icon>error</mat-icon>
+      Meta de lucro abaixo do esperado (−R$ 1.300)
+    </div>
+    <div class="alert warning">
+      <mat-icon>warning</mat-icon>
+      Meta de despesa quase excedida (98% atingido)
+    </div>
+  </div>
+</div>
