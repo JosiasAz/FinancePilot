@@ -13,6 +13,7 @@ import { CriarPedido } from '../pages/criar-pedido/criar-pedido';
 import { ReceitasDespesas } from '../pages/receitas-despesas/receitas-despesas';
 import { Manutencao } from '../pages/manutencao/manutencao';
 import { Admin } from '../admin/admin/admin';
+import { ContasBancarias } from '../pages/contas-bancarias/contas-bancarias';
 
 export const routes: Routes = [
   // ROTAS SEM LAYOUT
@@ -31,7 +32,8 @@ export const routes: Routes = [
       { path: 'criarpedido', component: CriarPedido },
       { path: 'receita', component: ReceitasDespesas },
       { path: 'manutencao', component: Manutencao },
-      { path: 'admin', component: Admin }
+      { path: 'admin', component: Admin },
+      { path: 'contas', component: ContasBancarias}
     ]
   },
 
