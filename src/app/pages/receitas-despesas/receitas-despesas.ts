@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 
 @Component({
@@ -13,22 +13,23 @@ import { MatTableModule } from '@angular/material/table';
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
-    MatCardModule,
-    MatIconModule,
-    MatButtonModule,
+    FormsModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatTableModule
   ],
   templateUrl: './receitas-despesas.html',
   styleUrls: ['./receitas-despesas.scss']
 })
 export class ReceitasDespesas {
-  filtroForm: FormGroup;
-
-  receitas = 18500;
-  despesas = 7400;
+  filtro = {
+    tipo: 'todos',
+    periodo: 'mes',
+    categoria: 'todas'
+  };
 
   data = [
     { descricao: 'Venda Produto X', tipo: 'Receita', valor: 2500, status: 'Confirmado' },
@@ -37,23 +38,30 @@ export class ReceitasDespesas {
 
   displayedColumns = ['descricao', 'tipo', 'valor', 'status', 'acoes'];
 
-  constructor(private fb: FormBuilder) {
-    this.filtroForm = this.fb.group({
-      tipo: ['todos'],
-      periodo: ['mes'],
-      categoria: ['todas']
-    });
-  }
+  receitas = 18500;
+  despesas = 7400;
 
   get saldo() {
     return this.receitas - this.despesas;
   }
 
-  exportar(): void {
-    console.log('Exportar');
+  exportar() {
+    console.log('Exportar...');
+    // lógica para exportar CSV pode ser colocada aqui
   }
 
-  novoLancamento(): void {
-    console.log('Novo lançamento');
+  novoLancamento() {
+    console.log('Novo lançamento...');
+    // abrir modal ou redirecionar para outro formulário
+  }
+
+  editar(item: any) {
+    console.log('Editar item:', item);
+    // lógica para edição
+  }
+
+  excluir(item: any) {
+    console.log('Excluir item:', item);
+    this.data = this.data.filter(d => d !== item);
   }
 }

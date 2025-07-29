@@ -1,82 +1,160 @@
-.topo {
+.page-container {
+  padding: 2rem;
+}
+
+.titulo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #0b2f4a;
+  margin-bottom: 1.5rem;
+}
+
+.filtros {
   display: flex;
-  justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  align-items: flex-end;
+  margin-bottom: 2rem;
 
-  .filtros {
+  .form-group {
+    position: relative;
     display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+    flex-direction: column;
+    width: 200px;
+
+    select {
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 1rem;
+      background: #fff;
+      transition: border 0.3s;
+    }
+
+    label {
+      position: absolute;
+      top: -8px;
+      left: 12px;
+      background: #e3f2fd;
+      padding: 0 5px;
+      font-size: 0.85rem;
+      color: #666;
+      transition: 0.3s;
+      pointer-events: none;
+    }
+
+    select:focus {
+      border-color: #1976d2;
+    }
   }
 
-  .acoes {
+  .btn-group {
     display: flex;
-    gap: 1rem;
-    align-items: center;
+    gap: 0.5rem;
+    margin-left: auto;
 
-    button {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
+    .btn {
+      padding: 0.6rem 1.2rem;
+      font-size: 0.95rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+
+      &.blue {
+        background: #1976d2;
+        color: #fff;
+
+        &:hover {
+          background: #125a9c;
+        }
+      }
+
+      &.outline {
+        border: 2px solid #1976d2;
+        color: #1976d2;
+        background: transparent;
+
+        &:hover {
+          background: #e3f2fd;
+        }
+      }
     }
   }
 }
 
-.resumo-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+.cards {
+  display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
 
-  mat-card {
+  .card {
+    flex: 1;
     padding: 1.2rem;
     border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
 
     h3 {
-      margin: 0 0 0.5rem;
-      font-size: 1.1rem;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
     }
 
     p {
-      font-size: 1.3rem;
+      font-size: 1.4rem;
       font-weight: bold;
     }
 
-    &.receita {
-      background: #e0f7fa;
-      color: #00796b;
+    &.blue {
+      border-left: 6px solid #1976d2;
+      color: #1976d2;
     }
 
-    &.despesa {
-      background: #ffebee;
-      color: #c62828;
+    &.red {
+      border-left: 6px solid #d32f2f;
+      color: #d32f2f;
     }
 
-    &.saldo {
-      background: #f1f8e9;
-      color: #33691e;
+    &.green {
+      border-left: 6px solid #388e3c;
+      color: #388e3c;
     }
   }
 }
 
 .tabela {
   width: 100%;
-  border-radius: 8px;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 10px;
   overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+
+  th, td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
 
   th {
-    background: #f4f6f8;
-    font-weight: 600;
+    background: #f1f1f1;
+    font-weight: bold;
   }
 
-  td, th {
-    padding: 0.75rem 1rem;
-  }
+  .acoes {
+    display: flex;
+    gap: 0.5rem;
 
-  tr:hover {
-    background: #f9f9f9;
+    button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1.1rem;
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
   }
 }
