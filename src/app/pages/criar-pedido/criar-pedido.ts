@@ -1,35 +1,30 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
-import { CommonModule } from '@angular/common';
+import { Component, EventEmitter, Output } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
 
 @Component({
-  selector: 'app-criar-pedido',
+  selector: 'app-formulario-criar-pedido',
   standalone: true,
   templateUrl: './criar-pedido.html',
   styleUrls: ['./criar-pedido.scss'],
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule,
-    MatDialogModule
+    MatButtonModule
   ]
 })
 export class CriarPedido {
-  pedidoForm: FormGroup;
-  modoEdicao: boolean = false;
+  @Output() fechar = new EventEmitter<void>();
+  @Output() pedidoCriado = new EventEmitter<any>();
 
-  constructor(
-    private fb: FormBuilder,
-    private dialogRef: MatDialogRef<CriarPedido>,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
+  modoEdicao = false;
+
+  pedidoForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
     this.pedidoForm = this.fb.group({
       cliente: [''],
       produto: [''],
@@ -37,20 +32,24 @@ export class CriarPedido {
       formaPagamento: [''],
       observacao: ['']
     });
+  }
 
-    if (data) {
-      this.modoEdicao = true;
-      this.pedidoForm.patchValue(data);
-    }
+  onCancel() {
+    this.fechar.emit();
   }
 
   onSubmit() {
     if (this.pedidoForm.valid) {
-      this.dialogRef.close(this.pedidoForm.value);
-    }
-  }
+      const novoPedido = {
+        codigo: Math.floor(Math.random() * 10000),
+        data: new Date().toLocaleDateString(),
+        valor: this.pedidoForm.value.valor,
+        metodo: this.pedidoForm.value.formaPagamento,
+        status: 'Pendente'
+      };
 
-  onCancel() {
-    this.dialogRef.close();
+      this.pedidoCriado.emit(novoPedido);
+      this.fechar.emit();
+    }
   }
 }

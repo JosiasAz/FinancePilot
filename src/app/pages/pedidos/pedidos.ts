@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
+import { Pedido, PedidosService } from '../../service/pedidos.service';
 import { CriarPedido } from '../criar-pedido/criar-pedido';
+
 
 @Component({
   selector: 'app-pedidos',
@@ -16,111 +17,39 @@ import { CriarPedido } from '../criar-pedido/criar-pedido';
   styleUrls: ['./pedidos.scss'],
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    MatButtonModule,
+    MatCheckboxModule,
     MatFormFieldModule,
     MatSelectModule,
-    MatButtonModule,
-    MatDialogModule,
     MatIconModule,
-    MatCheckboxModule
+    MatTableModule,
+    CriarPedido
   ]
 })
-export class Pedidos {
-  filtroForm: FormGroup;
-  selecionadosForm: FormGroup;
-  pedidos: any[] = [
-    { codigo: 1, data: '2025-07-26', valor: 250.00, metodoPagamento: 'Pix', status: 'Pendente' },
-    { codigo: 2, data: '2025-07-26', valor: 1000.00, metodoPagamento: 'Crédito', status: 'Cancelado' },
-    { codigo: 3, data: '2025-07-26', valor: 2500.00, metodoPagamento: 'Débito', status: 'Pago' },
-    { codigo: 4, data: '2025-07-26', valor: 500.00, metodoPagamento: 'Boleto', status: 'Pago' }
-  ];
-  pedidosFiltrados = [...this.pedidos];
+export class Pedidos implements OnInit {
+  colunas: string[] = ['select', 'codigo', 'data', 'valor', 'metodo', 'status', 'acoes'];
+  pedidos: Pedido[] = [];
 
-  constructor(private dialog: MatDialog, private fb: FormBuilder) {
-    this.filtroForm = this.fb.group({
-      periodo: [''],
-      metodoPagamento: [''],
-      status: ['']
-    });
+  constructor(private pedidosService: PedidosService) { }
 
-    this.selecionadosForm = this.fb.group({
-      selecionados: this.fb.array(this.pedidos.map(() => this.fb.control(false)))
+  ngOnInit(): void {
+    this.pedidosService.listarPedidos().subscribe((pedidos) => {
+      this.pedidos = pedidos;
     });
   }
 
-  get selecionados(): FormArray {
-    return this.selecionadosForm.get('selecionados') as FormArray;
+  mostrarFormulario = false;
+
+  abrirFormularioPedido() {
+    this.mostrarFormulario = true;
   }
 
-  getControle(index: number): FormControl {
-    return this.selecionados.at(index) as FormControl;
+  fecharFormularioPedido() {
+    this.mostrarFormulario = false;
   }
 
-  abrirFormularioPedido(): void {
-    const dialogRef = this.dialog.open(CriarPedido, {
-      width: '500px',
-      disableClose: true
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        const novoCodigo = this.pedidos.length + 1;
-        const novoPedido = {
-          codigo: novoCodigo,
-          data: new Date().toISOString().slice(0, 10),
-          valor: result.valor,
-          metodoPagamento: result.formaPagamento,
-          status: 'Pendente'
-        };
-        this.pedidos.push(novoPedido);
-        this.pedidosFiltrados = [...this.pedidos];
-        this.selecionados.push(new FormControl(false));
-      }
-    });
+  adicionarPedido(pedido: any) {
+    this.pedidos.push(pedido);
   }
 
-  editarPedido(pedido: any): void {
-    const dialogRef = this.dialog.open(CriarPedido, {
-      width: '500px',
-      disableClose: true,
-      data: pedido
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        const index = this.pedidos.findIndex(p => p.codigo === pedido.codigo);
-        if (index !== -1) {
-          this.pedidos[index] = {
-            ...pedido,
-            ...result,
-            metodoPagamento: result.formaPagamento,
-            status: pedido.status || 'Pendente'
-          };
-          this.pedidosFiltrados = [...this.pedidos];
-        }
-      }
-    });
-  }
-
-  excluirPedido(pedido: any): void {
-    const index = this.pedidos.findIndex(p => p.codigo === pedido.codigo);
-    if (index !== -1) {
-      this.pedidos.splice(index, 1);
-      this.pedidosFiltrados = [...this.pedidos];
-      this.selecionados.removeAt(index);
-    }
-  }
-
-  alternarSelecaoTodos(event: any): void {
-    const checked = event.checked;
-    this.selecionados.controls.forEach(ctrl => ctrl.setValue(checked));
-  }
-
-  filtrarTabela(event: any, campo: string): void {
-    const valor = event.target.value.toLowerCase();
-    this.pedidosFiltrados = this.pedidos.filter(pedido => {
-      const dado = pedido[campo as keyof typeof pedido];
-      return dado && dado.toString().toLowerCase().includes(valor);
-    });
-  }
 }

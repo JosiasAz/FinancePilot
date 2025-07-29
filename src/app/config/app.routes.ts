@@ -9,12 +9,12 @@ import { Layout } from '../pages/layout/layout';
 // Telas com layout
 import { Dashboard } from '../pages/dashboard/dashboard';
 import { Pedidos } from '../pages/pedidos/pedidos';
-import { CriarPedido } from '../pages/criar-pedido/criar-pedido';
 import { ReceitasDespesas } from '../pages/receitas-despesas/receitas-despesas';
 import { Manutencao } from '../pages/manutencao/manutencao';
 import { Admin } from '../admin/admin/admin';
 import { ContasBancarias } from '../pages/contas-bancarias/contas-bancarias';
 import { MetasVsRealizado } from '../pages/metas/metas';
+import { CriarPedido } from '../pages/criar-pedido/criar-pedido';
 
 export const routes: Routes = [
   // ROTAS SEM LAYOUT
