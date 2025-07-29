@@ -7,9 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-
 import { CriarPedido } from '../criar-pedido/criar-pedido';
-import { Navbar } from '../navbar/navbar';
 
 @Component({
   selector: 'app-pedidos',
@@ -24,20 +22,19 @@ import { Navbar } from '../navbar/navbar';
     MatButtonModule,
     MatDialogModule,
     MatIconModule,
-    MatCheckboxModule,
-    Navbar
+    MatCheckboxModule
   ]
 })
 export class Pedidos {
   filtroForm: FormGroup;
   selecionadosForm: FormGroup;
-
   pedidos: any[] = [
-    { codigo: 1, data: '06/07/2025', valor: 250.00, metodoPagamento: 'Pix', status: 'Pendente' },
-    { codigo: 2, data: '06/07/2025', valor: 1000.00, metodoPagamento: 'Crédito', status: 'Cancelado' },
-    { codigo: 3, data: '06/07/2025', valor: 2500.00, metodoPagamento: 'Débito', status: 'Pago' },
-    { codigo: 4, data: '06/07/2025', valor: 500.00, metodoPagamento: 'Boleto', status: 'Pago' }
+    { codigo: 1, data: '2025-07-26', valor: 250.00, metodoPagamento: 'Pix', status: 'Pendente' },
+    { codigo: 2, data: '2025-07-26', valor: 1000.00, metodoPagamento: 'Crédito', status: 'Cancelado' },
+    { codigo: 3, data: '2025-07-26', valor: 2500.00, metodoPagamento: 'Débito', status: 'Pago' },
+    { codigo: 4, data: '2025-07-26', valor: 500.00, metodoPagamento: 'Boleto', status: 'Pago' }
   ];
+  pedidosFiltrados = [...this.pedidos];
 
   constructor(private dialog: MatDialog, private fb: FormBuilder) {
     this.filtroForm = this.fb.group({
@@ -55,15 +52,31 @@ export class Pedidos {
     return this.selecionadosForm.get('selecionados') as FormArray;
   }
 
-  abrirFormularioPedido() {
-    this.dialog.open(CriarPedido, {
+  getControle(index: number): FormControl {
+    return this.selecionados.at(index) as FormControl;
+  }
+
+  abrirFormularioPedido(): void {
+    const dialogRef = this.dialog.open(CriarPedido, {
       width: '500px',
       disableClose: true
     });
-  }
 
-  getControle(index: number): FormControl {
-    return this.selecionados.at(index) as FormControl;
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        const novoCodigo = this.pedidos.length + 1;
+        const novoPedido = {
+          codigo: novoCodigo,
+          data: new Date().toISOString().slice(0, 10),
+          valor: result.valor,
+          metodoPagamento: result.formaPagamento,
+          status: 'Pendente'
+        };
+        this.pedidos.push(novoPedido);
+        this.pedidosFiltrados = [...this.pedidos];
+        this.selecionados.push(new FormControl(false));
+      }
+    });
   }
 
   editarPedido(pedido: any): void {
@@ -77,7 +90,13 @@ export class Pedidos {
       if (result) {
         const index = this.pedidos.findIndex(p => p.codigo === pedido.codigo);
         if (index !== -1) {
-          this.pedidos[index] = { ...pedido, ...result };
+          this.pedidos[index] = {
+            ...pedido,
+            ...result,
+            metodoPagamento: result.formaPagamento,
+            status: pedido.status || 'Pendente'
+          };
+          this.pedidosFiltrados = [...this.pedidos];
         }
       }
     });
@@ -87,6 +106,7 @@ export class Pedidos {
     const index = this.pedidos.findIndex(p => p.codigo === pedido.codigo);
     if (index !== -1) {
       this.pedidos.splice(index, 1);
+      this.pedidosFiltrados = [...this.pedidos];
       this.selecionados.removeAt(index);
     }
   }
@@ -94,5 +114,13 @@ export class Pedidos {
   alternarSelecaoTodos(event: any): void {
     const checked = event.checked;
     this.selecionados.controls.forEach(ctrl => ctrl.setValue(checked));
+  }
+
+  filtrarTabela(event: any, campo: string): void {
+    const valor = event.target.value.toLowerCase();
+    this.pedidosFiltrados = this.pedidos.filter(pedido => {
+      const dado = pedido[campo as keyof typeof pedido];
+      return dado && dado.toString().toLowerCase().includes(valor);
+    });
   }
 }

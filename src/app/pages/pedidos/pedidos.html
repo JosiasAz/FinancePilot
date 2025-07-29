@@ -1,93 +1,58 @@
-<app-navbar></app-navbar>
+<div class="container">
+  <h2>Pedidos</h2>
 
-<div class="pedidos-container">
-  <aside class="sidebar">
-    <nav>
-      <ul>
-        <li class="active">Dashboard</li>
-        <li>Pedidos</li>
-        <li>Receitas & Despesas</li>
-        <li>Contas & Bancos</li>
-        <li>Metas</li>
-      </ul>
-    </nav>
-  </aside>
+  <div class="tabela-wrapper">
+    <table class="tabela-pedidos">
+      <thead>
+        <tr>
+          <th>
+            <mat-checkbox (change)="alternarSelecaoTodos($event)"></mat-checkbox>
+          </th>
+          <th>
+            Código
+            <input type="text" class="filtro-input" placeholder="Filtrar" (input)="filtrarTabela($event, 'codigo')" />
+          </th>
+          <th>
+            Data
+            <input type="text" class="filtro-input" placeholder="Filtrar" (input)="filtrarTabela($event, 'data')" />
+          </th>
+          <th>
+            Valor
+            <input type="text" class="filtro-input" placeholder="Filtrar" (input)="filtrarTabela($event, 'valor')" />
+          </th>
+          <th>
+            Método
+            <input type="text" class="filtro-input" placeholder="Filtrar" (input)="filtrarTabela($event, 'metodoPagamento')" />
+          </th>
+          <th>
+            Status
+            <input type="text" class="filtro-input" placeholder="Filtrar" (input)="filtrarTabela($event, 'status')" />
+          </th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pedido of pedidosFiltrados; let i = index">
+          <td>
+            <mat-checkbox [formControl]="getControle(i)"></mat-checkbox>
+          </td>
+          <td>{{ pedido.codigo }}</td>
+          <td>{{ pedido.data }}</td>
+          <td>{{ pedido.valor | currency:'BRL' }}</td>
+          <td>{{ pedido.metodoPagamento }}</td>
+          <td>{{ pedido.status }}</td>
+          <td class="acoes">
+            <button mat-icon-button (click)="editarPedido(pedido)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="excluirPedido(pedido)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-  <main class="pedidos-main">
-    <header>
-      <h1>Pedidos</h1>
-    </header>
-
-    <form [formGroup]="filtroForm" class="filtro">
-      <div class="filtro-grupo">
-        <mat-form-field appearance="outline">
-          <mat-label>Período</mat-label>
-          <mat-select formControlName="periodo">
-            <mat-option value="hoje">Hoje</mat-option>
-            <mat-option value="semana">Esta semana</mat-option>
-            <mat-option value="mes">Este mês</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Método de pagamento</mat-label>
-          <mat-select formControlName="metodoPagamento">
-            <mat-option value="">Todos</mat-option>
-            <mat-option value="pix">Pix</mat-option>
-            <mat-option value="credito">Crédito</mat-option>
-            <mat-option value="debito">Débito</mat-option>
-            <mat-option value="boleto">Boleto</mat-option>
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Status do Repasse</mat-label>
-          <mat-select formControlName="status">
-            <mat-option value="">Todos</mat-option>
-            <mat-option value="pendente">Pendente</mat-option>
-            <mat-option value="pago">Pago</mat-option>
-            <mat-option value="cancelado">Cancelado</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      <div class="filtro-acoes">
-        <button mat-stroked-button color="primary" (click)="abrirFormularioPedido()">Criar pedido</button>
-        <button mat-stroked-button color="accent">Exportar</button>
-      </div>
-    </form>
-
-    <section class="row-pedidos" [formGroup]="selecionadosForm">
-      <div class="pedido-row header">
-        <mat-checkbox (change)="alternarSelecaoTodos($event)"></mat-checkbox>
-        <p><strong>Código</strong></p>
-        <p><strong>Data</strong></p>
-        <p><strong>Valor</strong></p>
-        <p><strong>Método de pagamento</strong></p>
-        <p><strong>Status</strong></p>
-        <span></span>
-      </div>
-
-      <div class="pedido-row" *ngFor="let pedido of pedidos; let i = index">
-        <mat-checkbox [formControl]="getControle(i)"></mat-checkbox>
-        <p>{{ pedido.codigo }}</p>
-        <p>{{ pedido.data }}</p>
-        <p>{{ pedido.valor | currency:'BRL' }}</p>
-        <p>{{ pedido.metodoPagamento }}</p>
-        <span [ngClass]="{
-          'status-pendente': pedido.status === 'Pendente',
-          'status-pago': pedido.status === 'Pago',
-          'status-cancelado': pedido.status === 'Cancelado'
-        }">{{ pedido.status }}</span>
-        <span class="acoes">
-          <button mat-icon-button (click)="editarPedido(pedido)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button color="warn" (click)="excluirPedido(pedido)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </span>
-      </div>
-    </section>
-  </main>
+  <button mat-flat-button color="primary" (click)="abrirFormularioPedido()">+ Novo Pedido</button>
 </div>
