@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,6 +7,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
+import { ReceitaDespesaService, ReceitaDespesa } from '../../service/receita-despesa.service';
+import { PedidosService } from '../../service/pedidos.service';
+
+interface ReceitaDespesaExtendida extends ReceitaDespesa {
+  origemPedido?: boolean;
+}
 
 @Component({
   selector: 'app-receitas-despesas',
@@ -24,44 +30,78 @@ import { MatTableModule } from '@angular/material/table';
   templateUrl: './receitas-despesas.html',
   styleUrls: ['./receitas-despesas.scss']
 })
-export class ReceitasDespesas {
+export class ReceitasDespesas implements OnInit {
   filtro = {
     tipo: 'todos',
     periodo: 'mes',
     categoria: 'todas'
   };
 
-  data = [
-    { descricao: 'Venda Produto X', tipo: 'Receita', valor: 2500, status: 'Confirmado' },
-    { descricao: 'Pagamento Conta Y', tipo: 'Despesa', valor: 1200, status: 'Pendente' }
-  ];
-
+  data: ReceitaDespesaExtendida[] = [];
   displayedColumns = ['descricao', 'tipo', 'valor', 'status', 'acoes'];
 
-  receitas = 18500;
-  despesas = 7400;
+  constructor(
+    private receitaDespesaService: ReceitaDespesaService,
+    private pedidosService: PedidosService
+  ) {}
 
-  get saldo() {
+  ngOnInit(): void {
+    this.carregarLancamentos();
+  }
+
+  carregarLancamentos(): void {
+    this.receitaDespesaService.listarLancamentos().subscribe(lancamentos => {
+      this.pedidosService.listarPedidos().subscribe(pedidos => {
+        const receitasPedidos: ReceitaDespesaExtendida[] = pedidos
+          .filter(p => p.status === 'Pago')
+          .map((p, i) => ({
+            id: 1000 + i,
+            tipo: 'Receita',
+            categoria: 'Venda',
+            descricao: `Pedido #${p.codigo}`,
+            valor: p.valor,
+            data: p.data,
+            status: 'Confirmado',
+            origemPedido: true
+          }));
+
+        this.data = [...lancamentos.map(l => ({ ...l, origemPedido: false })), ...receitasPedidos];
+      });
+    });
+  }
+
+  get receitas(): number {
+    return this.data
+      .filter(d => d.tipo === 'Receita' && d.status === 'Confirmado')
+      .reduce((acc, d) => acc + d.valor, 0);
+  }
+
+  get despesas(): number {
+    return this.data
+      .filter(d => d.tipo === 'Despesa' && d.status === 'Confirmado')
+      .reduce((acc, d) => acc + d.valor, 0);
+  }
+
+  get saldo(): number {
     return this.receitas - this.despesas;
   }
 
-  exportar() {
+  exportar(): void {
     console.log('Exportar...');
-    // lógica para exportar CSV pode ser colocada aqui
   }
 
-  novoLancamento() {
+  novoLancamento(): void {
     console.log('Novo lançamento...');
-    // abrir modal ou redirecionar para outro formulário
+    // abrir formulário de criação manual
   }
 
-  editar(item: any) {
-    console.log('Editar item:', item);
-    // lógica para edição
+  editar(item: ReceitaDespesaExtendida): void {
+    if (item.origemPedido) return;
+    console.log('Editar:', item);
   }
 
-  excluir(item: any) {
-    console.log('Excluir item:', item);
+  excluir(item: ReceitaDespesaExtendida): void {
+    if (item.origemPedido) return;
     this.data = this.data.filter(d => d !== item);
   }
 }
