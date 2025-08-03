@@ -3,6 +3,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-formulario-criar-pedido',
@@ -11,26 +14,24 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrls: ['./criar-pedido.scss'],
   imports: [
     ReactiveFormsModule,
+    CommonModule,
     MatFormFieldModule,
     MatInputModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSelectModule,
+    MatOptionModule
   ]
 })
 export class CriarPedido {
   @Output() fechar = new EventEmitter<void>();
   @Output() pedidoCriado = new EventEmitter<any>();
 
-  modoEdicao = false;
-
   pedidoForm: FormGroup;
 
   constructor(private fb: FormBuilder) {
     this.pedidoForm = this.fb.group({
-      cliente: [''],
-      produto: [''],
       valor: [''],
-      formaPagamento: [''],
-      observacao: ['']
+      metodo: ['']
     });
   }
 
@@ -41,10 +42,10 @@ export class CriarPedido {
   onSubmit() {
     if (this.pedidoForm.valid) {
       const novoPedido = {
-        codigo: Math.floor(Math.random() * 10000),
-        data: new Date().toLocaleDateString(),
-        valor: this.pedidoForm.value.valor,
-        metodo: this.pedidoForm.value.formaPagamento,
+        codigo: 0, // será definido em pedidos.ts
+        data: new Date().toISOString().split('T')[0],
+        valor: parseFloat(this.pedidoForm.value.valor),
+        metodo: this.pedidoForm.value.metodo,
         status: 'Pendente'
       };
 
