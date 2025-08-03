@@ -1,88 +1,121 @@
 <div class="container">
   <div class="header">
-    <h2>Pedidos</h2>
-    <div class="actions">
-      <button class="btn-primary" (click)="abrirFormularioPedido()">
-        <span class="icon">＋</span> Criar pedido
-      </button>
-      <button class="btn-outline">
-        <span class="icon">⇩</span> Exportar
-      </button>
+    <h2 class="titulo">Pedidos</h2>
+    <div class="actions-wrapper">
+      <button class="btn-primary" (click)="abrirFormularioPedido()">+ Criar pedido</button>
+      <button class="btn-outline" (click)="exportarParaExcel()">⇩ Exportar</button>
     </div>
   </div>
 
-  <!-- Filtros -->
-  <div class="filtros">
-    <mat-form-field appearance="fill">
-      <mat-label>Período</mat-label>
-      <mat-select>
-        <mat-option value="30">Últimos 30 dias</mat-option>
-        <mat-option value="60">Últimos 60 dias</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="fill">
-      <mat-label>Método de pagamento</mat-label>
-      <mat-select>
-        <mat-option value="pix">Pix</mat-option>
-        <mat-option value="credito">Crédito</mat-option>
-        <mat-option value="debito">Débito</mat-option>
-        <mat-option value="boleto">Boleto</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="fill">
-      <mat-label>Status do repasse</mat-label>
-      <mat-select>
-        <mat-option value="pago">Pago</mat-option>
-        <mat-option value="pendente">Pendente</mat-option>
-        <mat-option value="cancelado">Cancelado</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-
-  <!-- Tabela de pedidos -->
   <div class="tabela-wrapper">
     <table>
       <thead>
         <tr>
-          <th><mat-checkbox></mat-checkbox></th>
-          <th>Código</th>
-          <th>Data</th>
-          <th>Valor</th>
-          <th>Método de pagamento</th>
-          <th>Status</th>
+          <th class="th-checkbox">
+            <input type="checkbox" [(ngModel)]="selecionarTodos" (change)="selecionarTodosChange()" />
+          </th>
+
+          <th class="th-codigo">
+            <div class="th-content">
+              <span>Código</span>
+              <input type="text" [(ngModel)]="filtros.codigo" (input)="aplicarFiltro()" />
+            </div>
+          </th>
+
+          <th class="th-data">
+            <div class="th-content">
+              <span>Data</span>
+              <div class="dropdown-container" (click)="toggleDropdown()" [class.aberto]="dropdownAberto">
+                <input type="text" [value]="filtros.datasSelecionadas.map(formatarData).join(', ')" readonly
+                  placeholder="Selecionar..." />
+                <div class="dropdown-opcoes" *ngIf="dropdownAberto" (click)="$event.stopPropagation()">
+
+                  <!-- Selecionar todos -->
+                  <label class="dropdown-item">
+                    <input type="checkbox" [checked]="todasDatasSelecionadas" (change)="alternarTodasDatas($event)" />
+                    <span>Selecionar todos</span>
+                  </label>
+
+                  <!-- Ordenação -->
+                  <div class="ordenar">
+                    <button class="ordenar-btn" (click)="ordenarDatas(true); $event.stopPropagation()">A–Z</button>
+                    <button class="ordenar-btn" (click)="ordenarDatas(false); $event.stopPropagation()">Z–A</button>
+                  </div>
+
+                  <!-- Lista de datas -->
+                  <label class="dropdown-item" *ngFor="let data of datasOrdenadas">
+                    <input type="checkbox" [checked]="filtros.datasSelecionadas.includes(data)"
+                      (change)="onCheckboxChange(data, $event)" />
+                    <span>{{ formatarData(data) }}</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </th>
+
+          <th class="th-valor">
+            <div class="th-content">
+              <span>Valor</span>
+              <input type="number" [(ngModel)]="filtros.valor" (input)="aplicarFiltro()" />
+            </div>
+          </th>
+
+          <th class="th-metodo">
+            <div class="th-content">
+              <span>Método</span>
+              <select [(ngModel)]="filtros.metodo" (change)="aplicarFiltro()">
+                <option value="">Todos</option>
+                <option *ngFor="let metodo of metodosUnicos" [value]="metodo">{{ metodo }}</option>
+              </select>
+            </div>
+          </th>
+
+          <th class="th-status">
+            <div class="th-content">
+              <span>Status</span>
+              <select [(ngModel)]="filtros.status" (change)="aplicarFiltro()">
+                <option value="">Todos</option>
+                <option value="Pendente">Pendente</option>
+                <option value="Cancelado">Cancelado</option>
+                <option value="Pago">Pago</option>
+              </select>
+            </div>
+          </th>
+
           <th>Ações</th>
         </tr>
       </thead>
+
       <tbody>
-        <tr *ngFor="let pedido of pedidos">
-          <td><mat-checkbox></mat-checkbox></td>
+        <tr *ngFor="let pedido of pedidosFiltrados; let i = index">
+          <td><input type="checkbox" [(ngModel)]="pedidoSelecionado[i]" (change)="atualizarSelecionarTodos()" /></td>
           <td>{{ pedido.codigo }}</td>
           <td>{{ pedido.data }}</td>
-          <td>R$ {{ pedido.valor | number:'1.2-2' }}</td>
+          <td>R$ {{ pedido.valor | number: '1.2-2' }}</td>
           <td>{{ pedido.metodo }}</td>
           <td>
-            <span class="badge" [ngClass]="pedido.status.toLowerCase()">
+            <span class="badge" [ngClass]="{
+                'badge-pendente': pedido.status === 'Pendente',
+                'badge-cancelado': pedido.status === 'Cancelado',
+                'badge-pago': pedido.status === 'Pago'
+              }">
               {{ pedido.status }}
             </span>
           </td>
-          <td>
-            <button mat-icon-button><mat-icon>edit</mat-icon></button>
-            <button mat-icon-button color="warn"><mat-icon>delete</mat-icon></button>
+          <td class="acoes">
+            <button (click)="editarPedido(pedido)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button (click)="excluirPedido(pedido)">
+              <mat-icon>delete</mat-icon>
+            </button>
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-
-  <!-- 🔷 Formulário flutuante -->
-  <div class="form-overlay" *ngIf="mostrarFormulario">
-    <div class="form-wrapper">
-      <app-formulario-criar-pedido
-        (fechar)="fecharFormularioPedido()"
-        (pedidoCriado)="adicionarPedido($event)">
-      </app-formulario-criar-pedido>
-    </div>
-  </div>
 </div>
+
+<app-formulario-criar-pedido *ngIf="mostrarFormulario" (fechar)="fecharFormularioPedido()"
+  (pedidoCriado)="onPedidoCriado($event)">
+</app-formulario-criar-pedido>
