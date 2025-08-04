@@ -7,8 +7,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
-import { ReceitaDespesaService, ReceitaDespesa } from '../../service/receita-despesa.service';
+import { combineLatest } from 'rxjs';
 import { PedidosService } from '../../service/pedidos.service';
+import { ReceitaDespesa, ReceitaDespesaService } from '../../service/receita-despesa.service';
 
 interface ReceitaDespesaExtendida extends ReceitaDespesa {
   origemPedido?: boolean;
@@ -50,23 +51,27 @@ export class ReceitasDespesas implements OnInit {
   }
 
   carregarLancamentos(): void {
-    this.receitaDespesaService.listarLancamentos().subscribe(lancamentos => {
-      this.pedidosService.listarPedidos().subscribe(pedidos => {
-        const receitasPedidos: ReceitaDespesaExtendida[] = pedidos
-          .filter(p => p.status === 'Pago')
-          .map((p, i) => ({
-            id: 1000 + i,
-            tipo: 'Receita',
-            categoria: 'Venda',
-            descricao: `Pedido #${p.codigo}`,
-            valor: p.valor,
-            data: p.data,
-            status: 'Confirmado',
-            origemPedido: true
-          }));
+    combineLatest([
+      this.receitaDespesaService.listarLancamentos(),
+      this.pedidosService.listarPedidos()
+    ]).subscribe(([lancamentos, pedidos]) => {
+      const receitasPedidos: ReceitaDespesaExtendida[] = pedidos
+        .filter(p => p.status === 'Pago')
+        .map((p, i) => ({
+          id: 1000 + i,
+          tipo: 'Receita',
+          categoria: 'Venda',
+          descricao: `Pedido #${p.codigo}`,
+          valor: p.valor,
+          data: p.data,
+          status: 'Confirmado',
+          origemPedido: true
+        }));
 
-        this.data = [...lancamentos.map(l => ({ ...l, origemPedido: false })), ...receitasPedidos];
-      });
+      this.data = [
+        ...lancamentos.map(l => ({ ...l, origemPedido: false })),
+        ...receitasPedidos
+      ];
     });
   }
 
@@ -98,10 +103,5 @@ export class ReceitasDespesas implements OnInit {
   editar(item: ReceitaDespesaExtendida): void {
     if (item.origemPedido) return;
     console.log('Editar:', item);
-  }
-
-  excluir(item: ReceitaDespesaExtendida): void {
-    if (item.origemPedido) return;
-    this.data = this.data.filter(d => d !== item);
   }
 }

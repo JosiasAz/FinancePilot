@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { ReceitaDespesaService } from './receita-despesa.service';
 
 export interface Pedido {
@@ -21,27 +21,35 @@ export class PedidosService {
     { codigo: 4, data: '2025-06-08', valor: 500, metodo: 'Boleto', status: 'Pago' }
   ];
 
+  private pedidosSubject = new BehaviorSubject<Pedido[]>(this.pedidosMock);
+
   constructor(private receitaDespesaService: ReceitaDespesaService) {}
 
   listarPedidos(): Observable<Pedido[]> {
-    return of(this.pedidosMock);
+    return this.pedidosSubject.asObservable();
   }
 
   atualizarStatusPedido(codigo: number, novoStatus: 'Pago' | 'Pendente' | 'Cancelado'): void {
-    const pedido = this.pedidosMock.find(p => p.codigo === codigo);
-    if (pedido) {
-      pedido.status = novoStatus;
+    const pedidosAtualizados = this.pedidosMock.map(p => {
+      if (p.codigo === codigo) {
+        p.status = novoStatus;
 
-      if (novoStatus === 'Pago') {
-        this.receitaDespesaService.criarReceita({
-          tipo: 'Receita',
-          categoria: 'Venda',
-          descricao: `Venda código ${pedido.codigo}`,
-          valor: pedido.valor,
-          data: pedido.data,
-          status: 'Confirmado'
-        });
+        if (novoStatus === 'Pago' &&
+            !this.receitaDespesaService.verificarSeReceitaExiste(p.codigo)) {
+          this.receitaDespesaService.criarReceita({
+            tipo: 'Receita',
+            categoria: 'Venda',
+            descricao: `Pedido #${p.codigo}`,
+            valor: p.valor,
+            data: p.data,
+            status: 'Confirmado'
+          });
+        }
       }
-    }
+      return p;
+    });
+
+    this.pedidosMock = pedidosAtualizados;
+    this.pedidosSubject.next([...this.pedidosMock]); // 🔹 dispara atualização
   }
 }

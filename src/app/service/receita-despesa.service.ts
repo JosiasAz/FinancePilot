@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface ReceitaDespesa {
   id: number;
@@ -63,8 +63,11 @@ export class ReceitaDespesaService {
     },
   ];
 
+  // BehaviorSubject mantém o estado e notifica automaticamente as mudanças
+  private dadosSubject = new BehaviorSubject<ReceitaDespesa[]>(this.dadosMock);
+
   listarLancamentos(): Observable<ReceitaDespesa[]> {
-    return of(this.dadosMock);
+    return this.dadosSubject.asObservable();
   }
 
   adicionarLancamento(lancamento: Omit<ReceitaDespesa, 'id'>): void {
@@ -72,7 +75,11 @@ export class ReceitaDespesaService {
       this.dadosMock.length > 0
         ? Math.max(...this.dadosMock.map((l) => l.id)) + 1
         : 1;
-    this.dadosMock.push({ id: novoId, ...lancamento });
+    const novoLancamento = { id: novoId, ...lancamento };
+    this.dadosMock.push(novoLancamento);
+
+    // Notifica todos os inscritos
+    this.dadosSubject.next([...this.dadosMock]);
   }
 
   criarReceita(lancamento: Omit<ReceitaDespesa, 'id'>): void {
