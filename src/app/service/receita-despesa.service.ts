@@ -1,15 +1,6 @@
-import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-
-export interface ReceitaDespesa {
-  id: number;
-  tipo: 'Receita' | 'Despesa';
-  categoria: string;
-  descricao: string;
-  valor: number;
-  data: string;
-  status: 'Confirmado' | 'Pendente' | 'Cancelado';
-}
+import { ReceitaDespesa } from '../models/receita-despesa.model';
+import { Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',

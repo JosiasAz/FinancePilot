@@ -1,6 +1,4 @@
-import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,7 +7,10 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { combineLatest } from 'rxjs';
 import { PedidosService } from '../../service/pedidos.service';
-import { ReceitaDespesa, ReceitaDespesaService } from '../../service/receita-despesa.service';
+import { ReceitaDespesaService } from '../../service/receita-despesa.service';
+import { ReceitaDespesa } from '../../models/receita-despesa.model';
+import { FormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
 
 interface ReceitaDespesaExtendida extends ReceitaDespesa {
   origemPedido?: boolean;
@@ -56,7 +57,10 @@ export class ReceitasDespesas implements OnInit {
       this.pedidosService.listarPedidos()
     ]).subscribe(([lancamentos, pedidos]) => {
       const receitasPedidos: ReceitaDespesaExtendida[] = pedidos
-        .filter(p => p.status === 'Pago')
+        .filter(p => 
+          p.status === 'Pago' &&
+          !lancamentos.some(l => l.descricao === `Pedido #${p.codigo}`)
+        )
         .map((p, i) => ({
           id: 1000 + i,
           tipo: 'Receita',
@@ -71,7 +75,19 @@ export class ReceitasDespesas implements OnInit {
       this.data = [
         ...lancamentos.map(l => ({ ...l, origemPedido: false })),
         ...receitasPedidos
-      ];
+      ].sort((a, b) => {
+        // 1️⃣ Ordena por data mais recente primeiro
+        const diffData = new Date(b.data).getTime() - new Date(a.data).getTime();
+        if (diffData !== 0) return diffData;
+
+        // 2️⃣ Receitas antes das despesas
+        if (a.tipo !== b.tipo) {
+          return a.tipo === 'Receita' ? -1 : 1;
+        }
+
+        // 3️⃣ Maior valor primeiro
+        return b.valor - a.valor;
+      });
     });
   }
 
