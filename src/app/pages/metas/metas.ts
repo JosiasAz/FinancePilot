@@ -7,8 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Chart } from 'chart.js/auto';
-import { MetasService, MetaDados } from '../../service/metas.service';
+import { MetasService } from '../../service/metas.service';
+
 import { MetasDialog } from './metas-dialog/metas-dialog';
+import { MetaDados } from '../../models/metas.model';
 
 @Component({
   selector: 'app-metas',

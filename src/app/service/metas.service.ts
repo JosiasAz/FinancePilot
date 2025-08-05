@@ -1,12 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-
-export interface MetaDados {
-    categoria: 'Receita' | 'Despesa' | 'Lucro';
-    valorMeta: number;
-    valorRealizado: number;
-    atingido: number; // em porcentagem
-}
+import { MetaDados } from '../models/metas.model';
 
 @Injectable({
     providedIn: 'root'

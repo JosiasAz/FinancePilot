@@ -13,7 +13,7 @@ import { ReceitasDespesas } from '../pages/receitas-despesas/receitas-despesas';
 import { Admin } from '../admin/admin/admin';
 import { ContasBancarias } from '../pages/contas-bancarias/contas-bancarias';
 import { MetasVsRealizado } from '../pages/metas/metas';
-import { CriarPedido } from '../pages/criar-pedido/criar-pedido';
+import { CriarPedido } from '../pages/pedidos/criar-pedido/criar-pedido';
 import { NotFound } from '../pages/notfound/notfound';
 
 export const routes: Routes = [
