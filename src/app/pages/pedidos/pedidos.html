@@ -90,7 +90,7 @@
         <tr *ngFor="let pedido of pedidosFiltrados; let i = index">
           <td><input type="checkbox" [(ngModel)]="pedidoSelecionado[i]" (change)="atualizarSelecionarTodos()" /></td>
           <td>{{ pedido.codigo }}</td>
-          <td>{{ pedido.data }}</td>
+          <td>{{  formatarData(pedido.data) }}</td>
           <td>R$ {{ pedido.valor | number: '1.2-2' }}</td>
           <td>{{ pedido.metodo }}</td>
           <td>

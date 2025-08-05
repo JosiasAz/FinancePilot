@@ -1,14 +1,7 @@
-import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { ReceitaDespesaService } from './receita-despesa.service';
-
-export interface Pedido {
-  codigo: number;
-  data: string;
-  valor: number;
-  metodo: string;
-  status: 'Pago' | 'Pendente' | 'Cancelado';
-}
+import { Injectable } from '@angular/core';
+import { Pedido } from '../models/pedidos.model';
 
 @Injectable({
   providedIn: 'root'
@@ -29,13 +22,50 @@ export class PedidosService {
     return this.pedidosSubject.asObservable();
   }
 
+  adicionarPedido(novoPedido: Pedido): void {
+    const jaExiste = this.pedidosMock.some(p =>
+      p.data === novoPedido.data &&
+      p.valor === novoPedido.valor &&
+      p.metodo === novoPedido.metodo &&
+      p.status === novoPedido.status
+    );
+
+    if (jaExiste) {
+      console.warn('Pedido duplicado detectado. Ignorando inserção.');
+      return;
+    }
+
+    const ultimoCodigo = this.pedidosMock.length > 0
+      ? Math.max(...this.pedidosMock.map(p => p.codigo))
+      : 0;
+
+    novoPedido.codigo = ultimoCodigo + 1;
+    this.pedidosMock = [...this.pedidosMock, novoPedido];
+    this.pedidosSubject.next([...this.pedidosMock]);
+  }
+
+  atualizarPedido(codigo: number, novoValor: number, novoMetodo: string): void {
+    this.pedidosMock = this.pedidosMock.map(p =>
+      p.codigo === codigo ? { ...p, valor: novoValor, metodo: novoMetodo } : p
+    );
+    this.pedidosSubject.next([...this.pedidosMock]);
+  }
+
+  removerPedido(codigo: number): void {
+    this.pedidosMock = this.pedidosMock.filter(p => p.codigo !== codigo);
+    this.pedidosSubject.next([...this.pedidosMock]);
+  }
+
   atualizarStatusPedido(codigo: number, novoStatus: 'Pago' | 'Pendente' | 'Cancelado'): void {
-    const pedidosAtualizados = this.pedidosMock.map(p => {
+    this.pedidosMock = this.pedidosMock.map(p => {
       if (p.codigo === codigo) {
         p.status = novoStatus;
 
-        if (novoStatus === 'Pago' &&
-            !this.receitaDespesaService.verificarSeReceitaExiste(p.codigo)) {
+        //  Evita criar receita duplicada
+        if (
+          novoStatus === 'Pago' &&
+          !this.receitaDespesaService.verificarSeReceitaExiste(p.codigo)
+        ) {
           this.receitaDespesaService.criarReceita({
             tipo: 'Receita',
             categoria: 'Venda',
@@ -49,7 +79,6 @@ export class PedidosService {
       return p;
     });
 
-    this.pedidosMock = pedidosAtualizados;
-    this.pedidosSubject.next([...this.pedidosMock]); // 🔹 dispara atualização
+    this.pedidosSubject.next([...this.pedidosMock]);
   }
 }

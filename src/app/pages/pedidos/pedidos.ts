@@ -1,16 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { Pedido } from '../../models/pedidos.model';
 import { PedidosService } from '../../service/pedidos.service';
-import { ReceitaDespesaService } from '../../service/receita-despesa.service';
 import { CommonModule, NgIf, NgFor, NgClass, DecimalPipe } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatOptionModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
-import { CriarPedido } from '../criar-pedido/criar-pedido';
+import { CriarPedido } from './criar-pedido/criar-pedido';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { EditarPedido } from './editar-pedido/editar-pedido';
+import { FormsModule } from '@angular/forms';
+import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
+import { Pedido } from '../../models/pedidos.model';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-pedidos',
@@ -52,14 +52,16 @@ export class Pedidos implements OnInit {
 
   constructor(
     private pedidosService: PedidosService,
-    private receitaDespesaService: ReceitaDespesaService,
-    private dialog: MatDialog
-  ) { }
+    private dialog: MatDialog,
+    private elementRef: ElementRef,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.pedidosService.listarPedidos().subscribe((dados) => {
       this.pedidos = dados;
       this.aplicarFiltro();
+      this.cdr.detectChanges();
     });
   }
 
@@ -82,13 +84,8 @@ export class Pedidos implements OnInit {
   }
 
   onPedidoCriado(novoPedido: Pedido) {
-    const ultimoCodigo = this.pedidos.length > 0
-      ? Math.max(...this.pedidos.map(p => p.codigo))
-      : 0;
-
-    novoPedido.codigo = ultimoCodigo + 1;
-    this.pedidos.push(novoPedido);
-    this.aplicarFiltro();
+    console.log('📥 onPedidoCriado chamado', novoPedido);
+    this.pedidosService.adicionarPedido(novoPedido);
   }
 
   editarPedido(pedido: Pedido) {
@@ -99,34 +96,17 @@ export class Pedidos implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        pedido.valor = result.valor;
-        pedido.metodo = result.metodo;
+        this.pedidosService.atualizarPedido(pedido.codigo, result.valor, result.metodo);
 
-        const statusAlterado = pedido.status !== result.status;
-        pedido.status = result.status;
-
-        if (statusAlterado && result.status === 'Pago') {
-          const jaRegistrado = this.receitaDespesaService.verificarSeReceitaExiste(pedido.codigo);
-          if (!jaRegistrado) {
-            this.receitaDespesaService.criarReceita({
-              tipo: 'Receita',
-              categoria: 'Venda',
-              descricao: `Pedido #${pedido.codigo}`,
-              valor: pedido.valor,
-              data: pedido.data,
-              status: 'Confirmado'
-            });
-          }
+        if (pedido.status !== result.status) {
+          this.pedidosService.atualizarStatusPedido(pedido.codigo, result.status);
         }
-
-        this.aplicarFiltro();
       }
     });
   }
 
   excluirPedido(pedido: Pedido) {
-    this.pedidos = this.pedidos.filter(p => p !== pedido);
-    this.aplicarFiltro();
+    this.pedidosService.removerPedido(pedido.codigo);
   }
 
   get datasOrdenadas(): string[] {
@@ -146,6 +126,14 @@ export class Pedidos implements OnInit {
 
   toggleDropdown(): void {
     this.dropdownAberto = !this.dropdownAberto;
+  }
+
+  @HostListener('document:click', ['$event'])
+  fecharDropdownSeFora(event: Event) {
+    const clicouDentro = this.elementRef.nativeElement.contains(event.target);
+    if (!clicouDentro && this.dropdownAberto) {
+      this.dropdownAberto = false;
+    }
   }
 
   ordenarDatas(crescente: boolean) {
@@ -180,5 +168,5 @@ export class Pedidos implements OnInit {
     this.selecionarTodos = this.pedidoSelecionado.every(v => v);
   }
 
-  exportarParaExcel() { }
+  exportarParaExcel() {}
 }
