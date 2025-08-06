@@ -1,17 +1,23 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { NgClass, DecimalPipe, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ReceitaDespesa } from '../../models/receita-despesa.model';
 import { ReceitaDespesaService } from '../../service/receita-despesa.service';
 import Chart from 'chart.js/auto';
+import { FormsModule } from '@angular/forms';
 
+enum PeriodoDashboard {
+  Todos = 'todos',
+  Hoje = 'hoje',
+  Semana = 'semana',
+  Mes = 'mes'
+}
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule,
-    DecimalPipe,
-    NgClass
+    FormsModule
   ],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.scss']
@@ -20,6 +26,10 @@ export class Dashboard implements OnInit, AfterViewInit {
   totalReceitas = 0;
   totalDespesas = 0;
   saldo = 0;
+  notificacoes: { tipo: 'danger' | 'warning' | 'success', titulo: string, mensagem: string }[] = [];
+
+  filtroPeriodo: PeriodoDashboard = PeriodoDashboard.Todos;
+  PeriodoDashboard = PeriodoDashboard;
 
   @ViewChild('lineChart') lineChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('barChart') barChartRef!: ElementRef<HTMLCanvasElement>;
@@ -30,29 +40,91 @@ export class Dashboard implements OnInit, AfterViewInit {
   private receitasPorDia: { [key: string]: number } = {};
   private receitasPorMes: { [key: string]: number } = {};
 
-  constructor(private receitaDespesaService: ReceitaDespesaService) {}
+  constructor(private receitaDespesaService: ReceitaDespesaService) { }
 
   ngOnInit(): void {
+    this.carregarDashboard();
+  }
+
+  ngAfterViewInit(): void {
+    if (Object.keys(this.receitasPorDia).length) this.criarLineChart();
+    if (Object.keys(this.receitasPorMes).length) this.criarBarChart();
+  }
+
+  onPeriodoChange(periodo: PeriodoDashboard): void {
+    this.filtroPeriodo = periodo;
+    this.carregarDashboard();
+  }
+
+  private carregarDashboard(): void {
     this.receitaDespesaService.listarLancamentos().subscribe((lancamentos: ReceitaDespesa[]) => {
-      const receitas = lancamentos.filter(l => l.tipo === 'Receita');
-      const despesas = lancamentos.filter(l => l.tipo === 'Despesa');
+      // ❗️ Filtra lançamentos por período e apenas os com status "Confirmado"
+      const filtrados = lancamentos.filter(l =>
+        this.filtrarPorPeriodo(l.data) && l.status === 'Confirmado'
+      );
+
+      const receitas = filtrados.filter(l => l.tipo === 'Receita');
+      const despesas = filtrados.filter(l => l.tipo === 'Despesa');
 
       this.totalReceitas = receitas.reduce((acc, atual) => acc + atual.valor, 0);
       this.totalDespesas = despesas.reduce((acc, atual) => acc + atual.valor, 0);
       this.saldo = this.totalReceitas - this.totalDespesas;
+      this.notificacoes = []; // limpa notificações anteriores
+      if (this.saldo < 0) {
+        this.notificacoes.push({
+          tipo: 'danger',
+          titulo: 'Saldo negativo!',
+          mensagem: `Seu saldo está negativo em R$ ${Math.abs(this.saldo).toFixed(2)}. Verifique suas despesas.`
+        });
+      }
+
+      if (this.totalReceitas < 1000) {
+        this.notificacoes.push({
+          tipo: 'warning',
+          titulo: 'Receitas muito baixas',
+          mensagem: 'Suas receitas totais estão abaixo de R$ 1.000 neste período.'
+        });
+      }
+
+      if (this.totalReceitas > 10000) {
+        this.notificacoes.push({
+          tipo: 'success',
+          titulo: 'Ótimo desempenho!',
+          mensagem: 'Suas receitas ultrapassaram R$ 10.000. Continue assim!'
+        });
+      }
+
 
       this.receitasPorDia = this.agruparPorData(receitas);
       this.receitasPorMes = this.agruparPorMes(receitas);
 
-      this.criarLineChart(); // se ViewChild já estiver carregado, mostra
+      this.criarLineChart();
       this.criarBarChart();
     });
   }
 
-  ngAfterViewInit(): void {
-    // Garante que cria os gráficos se os dados já chegaram
-    if (Object.keys(this.receitasPorDia).length) this.criarLineChart();
-    if (Object.keys(this.receitasPorMes).length) this.criarBarChart();
+  private filtrarPorPeriodo(dataStr: string): boolean {
+    const data = new Date(dataStr);
+    const hoje = new Date();
+
+    switch (this.filtroPeriodo) {
+      case PeriodoDashboard.Hoje:
+        return data.toDateString() === hoje.toDateString();
+
+      case PeriodoDashboard.Semana: {
+        const primeiroDiaSemana = new Date(hoje);
+        primeiroDiaSemana.setDate(hoje.getDate() - hoje.getDay());
+        const ultimoDiaSemana = new Date(primeiroDiaSemana);
+        ultimoDiaSemana.setDate(primeiroDiaSemana.getDate() + 6);
+        return data >= primeiroDiaSemana && data <= ultimoDiaSemana;
+      }
+
+      case PeriodoDashboard.Mes:
+        return data.getMonth() === hoje.getMonth() && data.getFullYear() === hoje.getFullYear();
+
+      default:
+        return true;
+    }
   }
 
   private agruparPorData(receitas: ReceitaDespesa[]) {

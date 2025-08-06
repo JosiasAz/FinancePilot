@@ -2,6 +2,17 @@
   <main class="dashboard-main">
     <div class="header">
       <h1 class="titulo">Dashboard</h1>
+
+      <!-- Filtro de Período -->
+      <div class="filtro-periodo">
+        <label for="periodo">Período:</label>
+        <select id="periodo" [(ngModel)]="filtroPeriodo" (change)="onPeriodoChange(filtroPeriodo)">
+          <option [value]="PeriodoDashboard.Todos">Todos</option>
+          <option [value]="PeriodoDashboard.Hoje">Hoje</option>
+          <option [value]="PeriodoDashboard.Semana">Esta semana</option>
+          <option [value]="PeriodoDashboard.Mes">Este mês</option>
+        </select>
+      </div>
     </div>
 
     <section class="cards">
@@ -33,15 +44,15 @@
       </div>
     </section>
 
-    <section class="notifications">
+    <section class="notifications" *ngIf="notificacoes.length > 0">
       <h2>Notificações</h2>
-      <div class="notification danger" *ngIf="saldo < 0">
-        <strong>Saldo negativo!</strong>
-        <p>Seu saldo atual está negativo em R$ {{ saldo * -1 | number: '1.2-2' }}. Verifique suas despesas ou transfira fundos.</p>
-      </div>
-      <div class="notification danger">
-        <strong>Repasse vencido</strong>
-        <p>Existem 3 repasses vencidos há mais de 5 dias.</p>
+      <div
+        class="notification"
+        *ngFor="let notificacao of notificacoes"
+        [ngClass]="notificacao.tipo"
+      >
+        <strong>{{ notificacao.titulo }}</strong>
+        <p>{{ notificacao.mensagem }}</p>
       </div>
     </section>
   </main>
