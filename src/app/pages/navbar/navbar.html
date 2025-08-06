@@ -16,9 +16,7 @@
 
         <div *ngIf="!isLogged" class="navbar-right">
             <a routerLink="/login" routerLinkActive="active" class="btn-login">Login</a>
-            <!-- <button class="btn-login" (click)="irParaLogin()">Login</button> -->
             <a routerLink="/register" routerLinkActive="active" class="btn-cadastro">Cadastrar</a>
-            <!-- <button class="btn-cadastro" (click)="irParaCadastro()">Cadastro</button> -->
         </div>
         <div *ngIf="isLogged" class="navbar-right div-menu">
             <button matIconButton [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
@@ -38,7 +36,6 @@
                 <span style="color: red;">Sair</span>
             </button>
             </mat-menu>
-
         </div>
     </div>
 </nav>
