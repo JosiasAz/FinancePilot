@@ -1,7 +1,9 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgClass, DecimalPipe, CommonModule } from '@angular/common';
-import { ReceitaDespesa, ReceitaDespesaService } from '../../service/receita-despesa.service';
+import { ReceitaDespesa } from '../../models/receita-despesa.model';
+import { ReceitaDespesaService } from '../../service/receita-despesa.service';
 import Chart from 'chart.js/auto';
+
 
 @Component({
   selector: 'app-dashboard',
