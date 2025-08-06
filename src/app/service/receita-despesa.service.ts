@@ -1,9 +1,10 @@
-import { BehaviorSubject, Observable } from 'rxjs';
-import { ReceitaDespesa } from '../models/receita-despesa.model';
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, combineLatest, Observable, of, map, mergeMap } from 'rxjs';
+import { ReceitaDespesa } from '../models/receita-despesa.model';
+import { PedidosService } from './pedidos.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ReceitaDespesaService {
   private dadosMock: ReceitaDespesa[] = [
@@ -54,12 +55,37 @@ export class ReceitaDespesaService {
     },
   ];
 
-  // BehaviorSubject mantém o estado e notifica automaticamente as mudanças
   private dadosSubject = new BehaviorSubject<ReceitaDespesa[]>(this.dadosMock);
 
+  constructor(private pedidosService: PedidosService) { }
+
   listarLancamentos(): Observable<ReceitaDespesa[]> {
-    return this.dadosSubject.asObservable();
+    return this.dadosSubject.asObservable().pipe(
+      mergeMap(lancamentos =>
+        this.pedidosService.listarPedidos().pipe(
+          map(pedidos => {
+            const receitasPedidos: ReceitaDespesa[] = pedidos
+              .filter(p =>
+                p.status === 'Pago' &&
+                !lancamentos.some(l => l.descricao === `Pedido #${p.codigo}`)
+              )
+              .map((p, i) => ({
+                id: 1000 + i,
+                tipo: 'Receita',
+                categoria: 'Venda',
+                descricao: `Pedido #${p.codigo}`,
+                valor: p.valor,
+                data: p.data,
+                status: 'Confirmado'
+              }));
+
+            return [...lancamentos, ...receitasPedidos];
+          })
+        )
+      )
+    );
   }
+
 
   adicionarLancamento(lancamento: Omit<ReceitaDespesa, 'id'>): void {
     const novoId =
@@ -68,8 +94,6 @@ export class ReceitaDespesaService {
         : 1;
     const novoLancamento = { id: novoId, ...lancamento };
     this.dadosMock.push(novoLancamento);
-
-    // Notifica todos os inscritos
     this.dadosSubject.next([...this.dadosMock]);
   }
 
@@ -82,4 +106,9 @@ export class ReceitaDespesaService {
       (l) => l.tipo === 'Receita' && l.descricao === `Pedido #${codigoPedido}`
     );
   }
+
+  getReceitasDespesas(): Observable<ReceitaDespesa[]> {
+    return this.listarLancamentos();
+  }
+
 }

@@ -1,24 +1,21 @@
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
-import { combineLatest } from 'rxjs';
-import { PedidosService } from '../../service/pedidos.service';
+
 import { ReceitaDespesaService } from '../../service/receita-despesa.service';
 import { ReceitaDespesa } from '../../models/receita-despesa.model';
-import { FormsModule } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
-
-interface ReceitaDespesaExtendida extends ReceitaDespesa {
-  origemPedido?: boolean;
-}
 
 @Component({
   selector: 'app-receitas-despesas',
   standalone: true,
+  templateUrl: './receitas-despesas.html',
+  styleUrls: ['./receitas-despesas.scss'],
   imports: [
     CommonModule,
     FormsModule,
@@ -28,66 +25,25 @@ interface ReceitaDespesaExtendida extends ReceitaDespesa {
     MatIconModule,
     MatCardModule,
     MatTableModule
-  ],
-  templateUrl: './receitas-despesas.html',
-  styleUrls: ['./receitas-despesas.scss']
+  ]
 })
 export class ReceitasDespesas implements OnInit {
   filtro = {
     tipo: 'todos',
-    periodo: 'mes',
+    periodo: 'todos', // <- agora tem opção de exibir todos os períodos
     categoria: 'todas'
   };
 
-  data: ReceitaDespesaExtendida[] = [];
+  todosDados: ReceitaDespesa[] = [];
+  data: ReceitaDespesa[] = [];
   displayedColumns = ['descricao', 'tipo', 'valor', 'status', 'acoes'];
 
-  constructor(
-    private receitaDespesaService: ReceitaDespesaService,
-    private pedidosService: PedidosService
-  ) {}
+  constructor(private receitaDespesaService: ReceitaDespesaService) {}
 
   ngOnInit(): void {
-    this.carregarLancamentos();
-  }
-
-  carregarLancamentos(): void {
-    combineLatest([
-      this.receitaDespesaService.listarLancamentos(),
-      this.pedidosService.listarPedidos()
-    ]).subscribe(([lancamentos, pedidos]) => {
-      const receitasPedidos: ReceitaDespesaExtendida[] = pedidos
-        .filter(p => 
-          p.status === 'Pago' &&
-          !lancamentos.some(l => l.descricao === `Pedido #${p.codigo}`)
-        )
-        .map((p, i) => ({
-          id: 1000 + i,
-          tipo: 'Receita',
-          categoria: 'Venda',
-          descricao: `Pedido #${p.codigo}`,
-          valor: p.valor,
-          data: p.data,
-          status: 'Confirmado',
-          origemPedido: true
-        }));
-
-      this.data = [
-        ...lancamentos.map(l => ({ ...l, origemPedido: false })),
-        ...receitasPedidos
-      ].sort((a, b) => {
-        // 1️⃣ Ordena por data mais recente primeiro
-        const diffData = new Date(b.data).getTime() - new Date(a.data).getTime();
-        if (diffData !== 0) return diffData;
-
-        // 2️⃣ Receitas antes das despesas
-        if (a.tipo !== b.tipo) {
-          return a.tipo === 'Receita' ? -1 : 1;
-        }
-
-        // 3️⃣ Maior valor primeiro
-        return b.valor - a.valor;
-      });
+    this.receitaDespesaService.listarLancamentos().subscribe((dados) => {
+      this.todosDados = dados.sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
+      this.aplicarFiltros(); // Aplica os filtros iniciais ao carregar
     });
   }
 
@@ -107,17 +63,47 @@ export class ReceitasDespesas implements OnInit {
     return this.receitas - this.despesas;
   }
 
+  editar(item: ReceitaDespesa): void {
+    if (item.descricao.startsWith('Pedido #')) return;
+    console.log('Editar:', item);
+  }
+
   exportar(): void {
     console.log('Exportar...');
   }
 
   novoLancamento(): void {
     console.log('Novo lançamento...');
-    // abrir formulário de criação manual
   }
 
-  editar(item: ReceitaDespesaExtendida): void {
-    if (item.origemPedido) return;
-    console.log('Editar:', item);
+  aplicarFiltros(): void {
+    const hoje = new Date();
+    const semanaInicio = new Date(hoje);
+    semanaInicio.setDate(hoje.getDate() - hoje.getDay());
+    const semanaFim = new Date(semanaInicio);
+    semanaFim.setDate(semanaInicio.getDate() + 6);
+
+    this.data = this.todosDados.filter((item: ReceitaDespesa) => {
+      const dataItem = new Date(item.data);
+
+      const passaTipo =
+        this.filtro.tipo === 'todos' || item.tipo.toLowerCase() === this.filtro.tipo.toLowerCase();
+
+      const passaCategoria =
+        this.filtro.categoria === 'todas' || item.categoria.toLowerCase() === this.filtro.categoria.toLowerCase();
+
+      let passaPeriodo = true;
+      if (this.filtro.periodo === 'hoje') {
+        passaPeriodo = dataItem.toDateString() === hoje.toDateString();
+      } else if (this.filtro.periodo === 'semana') {
+        passaPeriodo = dataItem >= semanaInicio && dataItem <= semanaFim;
+      } else if (this.filtro.periodo === 'mes') {
+        passaPeriodo = dataItem.getMonth() === hoje.getMonth() && dataItem.getFullYear() === hoje.getFullYear();
+      } else if (this.filtro.periodo === 'todos') {
+        passaPeriodo = true;
+      }
+
+      return passaTipo && passaCategoria && passaPeriodo;
+    });
   }
 }
