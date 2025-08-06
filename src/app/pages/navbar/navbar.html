@@ -5,7 +5,7 @@
             <img src="LogoDeitada.png" alt="Logo deitada FinancePilot" class="navbar-logo-img">
         </div>
 
-        <ul *ngIf="!isLogged" class="navbar-center">
+        <ul *ngIf="isLogged" class="navbar-center">
             <!-- <li><a routerLink="/" routerLinkActive="active">Início</a></li>
                 <li><a routerLink="/porqueEscolher" routerLinkActive="active">Sobre</a></li>
                 <li><a routerLink="/contato" routerLinkActive="active">Contato</a></li> -->
@@ -14,11 +14,11 @@
             <li><a [routerLink]="['/']" fragment="contato" routerLinkActive="active">Contato</a></li>
         </ul>
 
-        <div *ngIf="!isLogged" class="navbar-right">
+        <div *ngIf="isLogged" class="navbar-right">
             <a routerLink="/login" routerLinkActive="active" class="btn-login">Login</a>
             <a routerLink="/register" routerLinkActive="active" class="btn-cadastro">Cadastrar</a>
         </div>
-        <div *ngIf="isLogged" class="navbar-right div-menu">
+        <div *ngIf="!isLogged" class="navbar-right div-menu">
             <button matIconButton [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
             <mat-icon style="color: rgb(0, 0, 0);">menu</mat-icon>
             </button>

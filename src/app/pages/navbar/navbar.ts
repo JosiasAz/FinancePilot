@@ -17,7 +17,8 @@ import { MatMenu, MatMenuModule } from '@angular/material/menu';
 })
 export class Navbar {
   constructor(private router: Router) { }
-  isLogged = true
+  isLogged = false
+  menuOpen = false
    @ViewChild('sidenav') sidenav!: MatSidenav;
 
   links = [
