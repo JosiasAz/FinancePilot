@@ -15,9 +15,7 @@
   display: flex;
   flex-direction: column;
   gap: 2rem;
-
 }
-
 
 .header {
   display: flex;
@@ -61,32 +59,36 @@
   justify-content: space-between;
 
   mat-card {
-    flex: 1 1 300px;
+    flex: 1 1 240px;
     background-color: white;
     border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     padding: 1rem;
     display: flex;
     flex-direction: column;
     cursor: pointer;
-    transition: transform 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+    border-left: 4px solid transparent;
+    min-height: 140px;
 
     &:hover {
       transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
     }
 
     mat-card-header {
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      margin-bottom: 0.5rem;
 
       mat-icon {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
         color: inherit;
       }
 
       mat-card-title {
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: $font-weight-bold;
         color: inherit;
       }
@@ -95,6 +97,8 @@
     mat-card-content {
       p {
         margin: 4px 0;
+        font-size: 0.9rem;
+        color: #333;
 
         strong {
           font-weight: $font-weight-bold;
@@ -107,37 +111,43 @@
     }
 
     &.receita {
+      background-color: #ffffff;
+      border-left-color: #2196f3;
 
       mat-card-title,
       mat-icon {
-        color: #1976d2;
+        color: #0b5394;
       }
     }
 
     &.despesa {
+      background-color: #ffffff;
+      border-left-color: #f44336;
 
       mat-card-title,
       mat-icon {
-        color: #e53935;
+        color: #b71c1c;
       }
     }
 
     &.lucro {
+      background-color: #ffffff;
+      border-left-color: #43a047;
 
       mat-card-title,
       mat-icon {
-        color: #10a817;
+        color: #2e7d32;
       }
     }
   }
 }
 
 .grafico-wrapper {
-  background: white;
+  background: #ffffff;
   border-radius: 12px;
-  padding: 1rem;
-  height: 220px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  padding: 1rem 2rem;
+  height: 250px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   overflow: hidden;
 
   canvas {
@@ -175,8 +185,16 @@
     }
 
     &.info {
-      background-color: #e3f2fd;
-      color: #0288d1;
+      background-color: #2196f3;
+      color: #ffffff;
+
+      mat-icon {
+        color: #ffffff;
+      }
+
+      a, span, strong {
+        color: #ffffff;
+      }
     }
 
     &.success {
