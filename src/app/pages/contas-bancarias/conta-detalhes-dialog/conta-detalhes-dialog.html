@@ -1,0 +1,33 @@
+<h2 class="titulo-modal">Detalhes da Conta</h2>
+
+<form [formGroup]="formConta" class="form-detalhes-conta">
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Nome da Conta</mat-label>
+    <input matInput formControlName="nome" />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Tipo</mat-label>
+    <mat-select formControlName="tipo">
+      <mat-option value="Corrente">Corrente</mat-option>
+      <mat-option value="Poupança">Poupança</mat-option>
+      <mat-option value="Conta Digital">Conta Digital</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Uso</mat-label>
+    <mat-select formControlName="uso">
+      <mat-option value="Recebimento">Recebimento</mat-option>
+      <mat-option value="Pagamento">Pagamento</mat-option>
+      <mat-option value="Mista">Mista</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <div class="acoes-modal">
+    <button mat-button color="warn" (click)="removerConta()">Remover</button>
+    <span class="spacer"></span>
+    <button mat-button (click)="fechar()">Cancelar</button>
+    <button mat-raised-button color="primary" (click)="salvar()">Salvar</button>
+  </div>
+</form>

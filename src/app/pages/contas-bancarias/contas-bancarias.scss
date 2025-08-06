@@ -50,6 +50,10 @@
   }
 
   .info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+
     h3 {
       margin: 0;
       font-size: 1.2rem;
@@ -59,12 +63,26 @@
 
     .tipo {
       display: inline-block;
-      margin-top: 0.2rem;
       background: #eeeeee;
       color: #555;
       font-size: 0.85rem;
       padding: 0.3rem 0.6rem;
       border-radius: 6px;
+    }
+
+    .uso {
+      display: inline-block;
+      background: #d0f0f6;
+      color: #0277bd;
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 5px;
+    }
+
+    .saldo {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #1a237e;
     }
   }
 

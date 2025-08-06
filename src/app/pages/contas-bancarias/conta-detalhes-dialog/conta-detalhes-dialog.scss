@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  padding: 1.5rem;
+  background-color: #fff;
+  border-radius: 12px;
+  max-width: 100%;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.titulo-modal {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #0d47a1;
+  margin-bottom: 1.5rem;
+}
+
+.form-detalhes-conta {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.acoes-modal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.spacer {
+  flex: 1;
+}
