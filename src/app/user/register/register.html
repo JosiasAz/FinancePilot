@@ -1,35 +1,36 @@
 <app-navbar></app-navbar>
-<div class="register-container">
-  <div class="register-box">
-    <div class="register-left">
-      <h2>Cadastre-se</h2>
-      <p class="subtitle">Preencha seus dados</p>
+
+<div class="register-wrapper">
+  <div class="register-card">
+    <div class="register-info">
+      <h2 class="titulo-principal">Cadastre-se</h2>
+      <p>Preencha seus dados</p>
 
       <form [formGroup]="formRegister" (ngSubmit)="sendCredentials()">
-        <mat-form-field appearance="fill" class="full-width">
+        <mat-form-field appearance="outline" class="full-width">
           <mat-label>Nome completo</mat-label>
-          <input matInput placeholder="Digite seu nome" formControlName="name" />
+          <input matInput formControlName="name" placeholder="Digite seu nome" />
         </mat-form-field>
 
-        <mat-form-field appearance="fill" class="full-width">
+        <mat-form-field appearance="outline" class="full-width">
           <mat-label>E-mail</mat-label>
-          <input matInput placeholder="Digite seu e-mail" formControlName="email" />
+          <input matInput formControlName="email" placeholder="Digite seu e-mail" />
         </mat-form-field>
 
-        <mat-form-field appearance="fill" class="full-width">
+        <mat-form-field appearance="outline" class="full-width">
           <mat-label>Senha</mat-label>
-          <input matInput [type]="hide ? 'password' : 'text'" placeholder="Digite sua senha" formControlName="password" />
-          <button mat-icon-button matSuffix type="button" (click)="hide = !hide" tabindex="-1">
+          <input matInput [type]="hide ? 'password' : 'text'" formControlName="password" placeholder="Digite sua senha" />
+          <button mat-icon-button matSuffix type="button" (click)="hide = !hide">
             <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
         </mat-form-field>
 
-        <mat-form-field appearance="fill" class="full-width">
-          <mat-label>Confirmar Senha</mat-label>
-          <input matInput [type]="hide ? 'password' : 'text'" placeholder="Confirme sua senha" formControlName="confirmPassword" />
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Confirmar senha</mat-label>
+          <input matInput [type]="hide ? 'password' : 'text'" formControlName="confirmPassword" placeholder="Confirme sua senha" />
         </mat-form-field>
 
-        <button mat-raised-button color="primary" class="btn-register" type="submit">
+        <button mat-raised-button class="btn-register" type="submit">
           Registrar
         </button>
 
@@ -37,12 +38,8 @@
       </form>
     </div>
 
-    <div class="register-right">
-      <img src="aviao.png" alt="Logo FinancePilot" class="ilustracao-register" />
-      <p class="highlight">
-        Dê o primeiro passo para organizar suas <span>finanças!</span>
-        Seu <span>futuro</span> financeiro começa aqui.
-      </p>
+    <div class="register-image">
+      <img src="/aviao.png" alt="Ilustração de cadastro" />
     </div>
   </div>
 </div>
