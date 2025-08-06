@@ -1,61 +1,41 @@
 <app-navbar></app-navbar>
-<div class="login-container">
-  <div class="login-box">
-    <div class="login-left">
-
-      <h2>Acesse sua conta</h2>
-      <p class="subtitle">Preencha seus dados</p>
+<div class="login-wrapper">
+  <div class="login-card">
+    <div class="login-info">
+      <h2>Bem-vindo de volta</h2>
+      <p>Acesse sua conta para continuar</p>
 
       <form [formGroup]="formLogin" (ngSubmit)="sendCredentials()">
-        <mat-form-field appearance="fill" class="full-width">
+        <mat-form-field appearance="outline" class="full-width">
           <mat-label>E-mail</mat-label>
           <input matInput formControlName="email" placeholder="Digite seu e-mail" />
-          <mat-error *ngIf="formLogin.get('email')?.hasError('required')">
-            E-mail é obrigatório
-          </mat-error>
-          <mat-error *ngIf="formLogin.get('email')?.hasError('email')">
-            E-mail inválido
-          </mat-error>
         </mat-form-field>
 
-        <mat-form-field appearance="fill" class="full-width">
+        <mat-form-field appearance="outline" class="full-width">
           <mat-label>Senha</mat-label>
           <input matInput [type]="hide ? 'password' : 'text'" formControlName="senha" placeholder="Digite sua senha" />
-          <button mat-icon-button matSuffix type="button" (click)="hide = !hide" tabindex="-1">
+          <button mat-icon-button matSuffix type="button" (click)="hide = !hide">
             <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
           </button>
-          <mat-error *ngIf="formLogin.get('senha')?.hasError('required')">
-            Senha é obrigatória
-          </mat-error>
-          <mat-error *ngIf="formLogin.get('senha')?.hasError('minlength')">
-            Mínimo de 6 caracteres
-          </mat-error>
         </mat-form-field>
 
-        <div class="options">
+        <div class="login-options">
           <mat-checkbox formControlName="rememberMe">Lembrar-me</mat-checkbox>
-          <a href="#">Esqueceu sua senha?</a>
+          <a href="#">Esqueceu a senha?</a>
         </div>
 
-        <form [formGroup]="formLogin" (ngSubmit)="sendCredentials()">
-          <button mat-raised-button color="primary" class="btn-login" type="submit">
-            Login
-          </button>
-        </form>
+        <button mat-raised-button class="btn-login" type="submit">
+          Entrar
+        </button>
 
-
-        <p class="register-text">Não possui conta? <a routerLink="/cadastro">Cadastra-se</a></p>
+        <p class="register-text">
+          Não possui conta? <a routerLink="/cadastro">Cadastre-se</a>
+        </p>
       </form>
     </div>
 
-    <div class="login-right">
-      <h1>Bem vindo de volta!</h1>
-      <img src="/investfin.png" alt="Ilustração de finanças" class="ilustracao-login" />
-
-      <p class="highlight">
-        Simples, rápido e seguro: organize sua vida financeira <span>em minutos.</span>
-      </p>
+    <div class="login-image">
+      <img src="/investfin.png" alt="Ilustração de finanças" />
     </div>
   </div>
 </div>
-
