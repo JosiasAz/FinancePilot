@@ -6,7 +6,7 @@
   <div class="contas-container">
     <div class="card-conta" *ngFor="let conta of contas">
       <div class="info">
-        <h3>{{ conta.nome }}</h3>
+        <h3 class="InstituicaoFinanceira">{{ conta.InstituicaoFinanceira }}</h3>
         <span class="tipo">{{ conta.tipo }}</span>
         <span class="uso">{{ conta.uso }}</span>
         <span class="saldo">Saldo: R$ {{ conta.saldo | number: '1.2-2' }}</span>

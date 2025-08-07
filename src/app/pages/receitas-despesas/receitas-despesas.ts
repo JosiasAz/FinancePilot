@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,9 +7,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
-
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
 import { ReceitaDespesaService } from '../../service/receita-despesa.service';
 import { ReceitaDespesa } from '../../models/receita-despesa.model';
+import { NovoLancamentoDialog } from './novo-lancamento-dialog/novo-lancamento-dialog';
 
 @Component({
   selector: 'app-receitas-despesas',
@@ -24,13 +27,14 @@ import { ReceitaDespesa } from '../../models/receita-despesa.model';
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatTableModule
+    MatTableModule,
+    MatDialogModule
   ]
 })
 export class ReceitasDespesas implements OnInit {
   filtro = {
     tipo: 'todos',
-    periodo: 'todos', // <- agora tem opção de exibir todos os períodos
+    periodo: 'todos',
     categoria: 'todas'
   };
 
@@ -38,12 +42,16 @@ export class ReceitasDespesas implements OnInit {
   data: ReceitaDespesa[] = [];
   displayedColumns = ['descricao', 'tipo', 'valor', 'status', 'acoes'];
 
-  constructor(private receitaDespesaService: ReceitaDespesaService) {}
+  constructor(
+    private receitaDespesaService: ReceitaDespesaService,
+    private cdr: ChangeDetectorRef,
+    private dialog: MatDialog
+  ) { }
 
   ngOnInit(): void {
-    this.receitaDespesaService.listarLancamentos().subscribe((dados) => {
+    this.receitaDespesaService.getReceitasDespesas().subscribe((dados) => {
       this.todosDados = dados.sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
-      this.aplicarFiltros(); // Aplica os filtros iniciais ao carregar
+      this.aplicarFiltros();
     });
   }
 
@@ -68,13 +76,45 @@ export class ReceitasDespesas implements OnInit {
     console.log('Editar:', item);
   }
 
-  exportar(): void {
-    console.log('Exportar...');
+  exportarParaExcel(): void {
+    const dadosExportacao = this.data.map(item => ({
+      Descrição: item.descricao,
+      Tipo: item.tipo,
+      Categoria: item.categoria,
+      Valor: item.valor.toLocaleString('pt-BR', {
+      }),
+      Data: new Date(item.data).toLocaleDateString('pt-BR'),
+      Status: item.status
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dadosExportacao);
+    const workbook = { Sheets: { 'Lançamentos': worksheet }, SheetNames: ['Lançamentos'] };
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+    const blobData = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    FileSaver.saveAs(blobData, 'lancamentos-financeiros.xlsx');
   }
 
   novoLancamento(): void {
-    console.log('Novo lançamento...');
+    const dialogRef = this.dialog.open(NovoLancamentoDialog, {
+      width: '480px',
+      height: '480px',
+      panelClass: 'dialog-custom',
+      data: null
+    });
+
+    dialogRef.afterClosed().subscribe(resultado => {
+      if (resultado) {
+        this.receitaDespesaService.adicionarLancamento(resultado);
+        this.receitaDespesaService.getReceitasDespesas().subscribe((dados) => {
+          this.todosDados = dados;
+          this.aplicarFiltros();
+          this.cdr.detectChanges();
+        });
+      }
+    });
   }
+
 
   aplicarFiltros(): void {
     const hoje = new Date();
@@ -99,8 +139,6 @@ export class ReceitasDespesas implements OnInit {
         passaPeriodo = dataItem >= semanaInicio && dataItem <= semanaFim;
       } else if (this.filtro.periodo === 'mes') {
         passaPeriodo = dataItem.getMonth() === hoje.getMonth() && dataItem.getFullYear() === hoje.getFullYear();
-      } else if (this.filtro.periodo === 'todos') {
-        passaPeriodo = true;
       }
 
       return passaTipo && passaCategoria && passaPeriodo;

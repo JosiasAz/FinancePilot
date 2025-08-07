@@ -1,0 +1,67 @@
+:host {
+  display: block;
+  padding: 1.5rem;
+  max-width: 400px;
+  box-sizing: border-box;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0b2f4a; // Azul escuro direto
+  margin-bottom: 1.5rem;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1.2rem;
+
+  ::ng-deep .mat-form-field-flex {
+    background-color: #e9ecf5; // Fundo cinza azulado claro
+    border-radius: 8px;
+  }
+
+  ::ng-deep .mat-form-field-appearance-fill .mat-form-field-outline {
+    border-color: transparent;
+  }
+
+  ::ng-deep .mat-select-value,
+  ::ng-deep input.mat-input-element {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333333; // Texto escuro
+  }
+}
+
+.botoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+
+  button {
+    min-width: 100px;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: none;
+  }
+
+  button[color='primary'] {
+    background-color: #0057b3; // Azul padrão FinancePilot
+    color: white;
+
+    &:hover {
+      background-color: #004a99;
+    }
+  }
+
+  button[mat-stroked-button] {
+    border-color: #0057b3;
+    color: #0057b3;
+
+    &:hover {
+      background-color: rgba(0, 87, 179, 0.05);
+    }
+  }
+}

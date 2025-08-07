@@ -32,11 +32,11 @@ export class ContaDetalhesDialog {
     private fb: FormBuilder
   ) {
     this.formConta = this.fb.group({
-      id: [data.id],
-      nome: [data.nome],
-      tipo: [data.tipo],
-      uso: [data.uso],
-      saldo: [data.saldo]
+      id: [{ value: data.id, disabled: true }],
+      nome: [{ value: data.InstituicaoFinanceira, disabled: true }],
+      tipo: [{ value: data.tipo, disabled: true }],
+      uso: [{ value: data.uso, disabled: true }],
+      saldo: [{ value: data.saldo, disabled: true }]
     });
   }
 
@@ -48,10 +48,12 @@ export class ContaDetalhesDialog {
     this.dialogRef.close();
   }
 
-  salvar(): void {
-    if (this.formConta.valid) {
-      const contaAtualizada: ContaBancaria = this.formConta.value;
-      this.dialogRef.close({ acao: 'salvar', conta: contaAtualizada });
-    }
-  }
+  // salvar(): void {
+  //   // O botão salvar foi removido da interface visual,
+  //   // mas se mantido, aqui está o tratamento de segurança:
+  //   if (this.formConta.valid) {
+  //     const contaAtualizada: ContaBancaria = this.formConta.getRawValue();
+  //     this.dialogRef.close({ acao: 'salvar', conta: contaAtualizada });
+  //   }
+  // }
 }

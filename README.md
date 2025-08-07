@@ -1,59 +1,160 @@
-# Finpilot
+# 🧩 FinancePilot
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.0.5.
+Este projeto foi gerado utilizando o [Angular CLI](https://github.com/angular/angular-cli) na versão 20.0.5.
 
-## Development server
+---
 
-To start a local development server, run:
+## ▶️ Servidor de Desenvolvimento
+
+Para iniciar um servidor local de desenvolvimento, execute:
 
 ```bash
 ng serve
-```
+````
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Após o servidor iniciar, abra seu navegador e acesse `http://localhost:4200/`.
+A aplicação será recarregada automaticamente sempre que você modificar os arquivos fonte.
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## ⚙️ Geração de Código (Scaffolding)
+
+O Angular CLI possui ferramentas poderosas para gerar código automaticamente.
+Para gerar um novo componente, execute:
 
 ```bash
-ng generate component component-name
+ng generate component nome-do-componente
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Para ver a lista completa de esquemas disponíveis (como `components`, `directives` ou `pipes`), use:
 
 ```bash
 ng generate --help
 ```
 
-## Building
+---
 
-To build the project run:
+## 🏗️ Build do Projeto
+
+Para compilar o projeto para produção:
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+A build será armazenada na pasta `dist/`.
+Por padrão, a compilação otimiza sua aplicação para performance e velocidade.
 
-## Running unit tests
+---
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## 🧪 Executar Testes Unitários
+
+Para rodar os testes unitários usando o [Karma](https://karma-runner.github.io):
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+---
 
-For end-to-end (e2e) testing, run:
+## 🧭 Testes de ponta-a-ponta (E2E)
+
+Para executar testes de ponta-a-ponta (end-to-end):
 
 ```bash
 ng e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+O Angular CLI não vem com um framework de E2E por padrão.
+Você pode adicionar o que melhor se adequar às suas necessidades.
 
-## Additional Resources
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 📚 Recursos Adicionais
+
+Para mais informações sobre o Angular CLI e sua documentação completa de comandos:
+🔗 [Angular CLI - Visão Geral e Referência de Comandos](https://angular.dev/tools/cli)
+
+---
+
+## 🚀 Funcionalidades
+
+- ✅ Gestão de **Receitas e Despesas** com filtros por período, tipo e status  
+- ✅ **Dashboard dinâmico** com gráficos e indicadores em tempo real  
+- ✅ Controle de **Metas Financeiras** com cálculo automático de progresso  
+- ✅ Módulo de **Pedidos** com exportação, status e ações  
+- ✅ Gerenciamento de **Contas Bancárias** com saldo atualizado por lançamentos  
+- ✅ Visual moderno com **Angular Material**  
+- ✅ SSR com **Vite + Express** para melhor desempenho  
+
+---
+
+## 🛠 Tecnologias
+
+### Front-end
+- Angular 20 + Standalone Components
+- Angular Material
+- Vite + SSR + Express
+- TypeScript + SCSS
+
+### Back-end
+- FastAPI (Python 3.11+)
+- Uvicorn
+- SQLite (mock) ou MySQL
+
+### Extras
+- RxJS + BehaviorSubject
+- XLSX + FileSaver.js
+- Figma (para UI/UX)
+
+---
+
+## 📁 Estrutura de Pastas (Frontend)
+
+```
+src/
+├── app/
+│   ├── pages/
+│   │   ├── dashboard/
+│   │   ├── receitas-despesas/
+│   │   ├── metas/
+│   │   ├── pedidos/
+│   │   └── contas-bancarias/
+│   ├── components/
+│   ├── models/
+│   ├── services/
+│   ├── config/
+│   └── styles/
+├── main.ts
+├── main.server.ts
+└── server.ts
+````
+
+---
+
+## 🧪 Instalação
+
+### Frontend (Angular + SSR)
+
+```bash
+npm install
+npm run serve:ssr:finpilot
+```
+
+### Backend (FastAPI)
+
+```bash
+python -m venv venv
+source venv/bin/activate     # Windows: .\venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+---
+
+## 📄 Licença
+
+Distribuído sob a licença MIT.
+Veja o arquivo `LICENSE` para mais informações.
+
+---
