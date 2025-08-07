@@ -11,6 +11,9 @@ import { FormsModule } from '@angular/forms';
 import { Component, OnInit, HostListener, ElementRef } from '@angular/core';
 import { Pedido } from '../../models/pedidos.model';
 import { ChangeDetectorRef } from '@angular/core';
+import * as XLSX from 'xlsx';
+import * as FileSaver from 'file-saver';
+
 
 @Component({
   selector: 'app-pedidos',
@@ -55,7 +58,7 @@ export class Pedidos implements OnInit {
     private dialog: MatDialog,
     private elementRef: ElementRef,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.pedidosService.listarPedidos().subscribe((dados) => {
@@ -168,5 +171,22 @@ export class Pedidos implements OnInit {
     this.selecionarTodos = this.pedidoSelecionado.every(v => v);
   }
 
-  exportarParaExcel() {}
+  exportarParaExcel(): void {
+    const dados = this.pedidosFiltrados.map(p => ({
+      Código: p.codigo,
+      Data: this.formatarData(p.data),
+      Valor: p.valor.toFixed(2),
+      Método: p.metodo,
+      Status: p.status
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dados);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Pedidos');
+
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    FileSaver.saveAs(blob, `pedidos_exportados_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  }
+
 }

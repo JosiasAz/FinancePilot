@@ -60,29 +60,29 @@ export class ReceitaDespesaService {
   constructor(private pedidosService: PedidosService) { }
 
   listarLancamentos(): Observable<ReceitaDespesa[]> {
-    return this.dadosSubject.asObservable().pipe(
-      mergeMap(lancamentos =>
-        this.pedidosService.listarPedidos().pipe(
-          map(pedidos => {
-            const receitasPedidos: ReceitaDespesa[] = pedidos
-              .filter(p =>
-                p.status === 'Pago' &&
-                !lancamentos.some(l => l.descricao === `Pedido #${p.codigo}`)
-              )
-              .map((p, i) => ({
-                id: 1000 + i,
-                tipo: 'Receita',
-                categoria: 'Venda',
-                descricao: `Pedido #${p.codigo}`,
-                valor: p.valor,
-                data: p.data,
-                status: 'Confirmado'
-              }));
+    return combineLatest([
+      this.dadosSubject.asObservable(),
+      this.pedidosService.listarPedidos()
+    ]).pipe(
+      map(([lancamentosExistentes, pedidosListados]) => {
+        const novosPedidos: ReceitaDespesa[] = pedidosListados
+          .filter(p =>
+            p.status === 'Pago' &&
+            !lancamentosExistentes.some(l => l.descricao === `Pedido #${p.codigo}`)
+          )
+          .map((p, i) => ({
+            id: 1000 + i,
+            tipo: 'Receita' as 'Receita',
+            categoria: 'Venda',
+            descricao: `Pedido #${p.codigo}`,
+            valor: p.valor,
+            data: p.data ?? new Date().toISOString(),
+            status: 'Confirmado' as 'Confirmado'
+          }));
 
-            return [...lancamentos, ...receitasPedidos];
-          })
-        )
-      )
+        const resultado = [...lancamentosExistentes, ...novosPedidos];
+        return resultado.sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
+      })
     );
   }
 
@@ -108,7 +108,31 @@ export class ReceitaDespesaService {
   }
 
   getReceitasDespesas(): Observable<ReceitaDespesa[]> {
-    return this.listarLancamentos();
+    return combineLatest([
+      this.dadosSubject.asObservable(),
+      this.pedidosService.listarPedidos()
+    ]).pipe(
+      map(([lancamentos, pedidos]) => {
+        const receitasPedidos: ReceitaDespesa[] = pedidos
+          .filter(p =>
+            p.status === 'Pago' &&
+            !lancamentos.some(l => l.descricao === `Pedido #${p.codigo}`)
+          )
+          .map((p, i) => ({
+            id: 1000 + i,
+            tipo: 'Receita' as const,
+            categoria: 'Venda',
+            descricao: `Pedido #${p.codigo}`,
+            valor: p.valor,
+            data: p.data ?? new Date().toISOString(),
+            status: 'Confirmado' as const
+          }));
+
+        const resultado = [...lancamentos, ...receitasPedidos];
+        return resultado.sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime());
+      })
+    );
   }
+
 
 }

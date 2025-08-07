@@ -58,7 +58,7 @@ export class Dashboard implements OnInit, AfterViewInit {
 
   private carregarDashboard(): void {
     this.receitaDespesaService.listarLancamentos().subscribe((lancamentos: ReceitaDespesa[]) => {
-      // ❗️ Filtra lançamentos por período e apenas os com status "Confirmado"
+      // Filtra lançamentos por período e apenas os com status "Confirmado"
       const filtrados = lancamentos.filter(l =>
         this.filtrarPorPeriodo(l.data) && l.status === 'Confirmado'
       );

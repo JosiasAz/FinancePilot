@@ -3,7 +3,7 @@
 <form [formGroup]="formConta" class="form-detalhes-conta">
   <mat-form-field appearance="fill" class="full-width">
     <mat-label>Instituição Financeira</mat-label>
-    <input matInput formControlName="InstituicaoFinanceira" />
+    <input matInput formControlName="nome"/>
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="full-width">
@@ -28,6 +28,5 @@
     <button mat-button color="warn" (click)="removerConta()">Remover</button>
     <span class="spacer"></span>
     <button mat-button (click)="fechar()">Cancelar</button>
-    <button mat-raised-button color="primary" (click)="salvar()">Salvar</button>
   </div>
 </form>

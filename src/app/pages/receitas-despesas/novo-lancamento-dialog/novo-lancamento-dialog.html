@@ -1,0 +1,50 @@
+<form class="dialog-content" [formGroup]="formLancamento" (ngSubmit)="salvar()">
+    <h2 class="titulo">Novo Lançamento</h2>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Descrição</mat-label>
+        <input matInput formControlName="descricao" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Tipo</mat-label>
+        <mat-select formControlName="tipo">
+            <mat-option value="Receita">Receita</mat-option>
+            <mat-option value="Despesa">Despesa</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Categoria</mat-label>
+        <mat-select formControlName="categoria" [disabled]="!formLancamento.get('tipo')?.value">
+            <mat-option *ngFor="let cat of categorias" [value]="cat">
+                {{ cat }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+
+    <mat-form-field appearance="fill">
+        <mat-label>Valor</mat-label>
+        <input matInput type="number" formControlName="valor" />
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+            <mat-option value="Confirmado">Confirmado</mat-option>
+            <mat-option value="Pendente">Pendente</mat-option>
+            <mat-option value="Cancelado">Cancelado</mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+        <mat-label>Data</mat-label>
+        <input matInput type="date" formControlName="data" />
+    </mat-form-field>
+
+    <div class="buttons">
+        <button mat-stroked-button type="button" color="warn" (click)="fechar()">Cancelar</button>
+        <button mat-flat-button type="submit" color="primary">Criar</button>
+    </div>
+</form>
