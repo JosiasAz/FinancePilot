@@ -2,8 +2,53 @@
 
 <form [formGroup]="formNovaConta" class="form-detalhes-conta">
   <mat-form-field appearance="fill" class="full-width">
-    <mat-label>Nome da Conta</mat-label>
-    <input matInput formControlName="nome" />
+    <mat-label>Instituição Financeira</mat-label>
+    <mat-select formControlName="InstituicaoFinanceira">
+      <mat-optgroup label="Bancos Tradicionais">
+        <mat-option value="Banco do Brasil">Banco do Brasil</mat-option>
+        <mat-option value="Caixa Econômica Federal">Caixa Econômica Federal</mat-option>
+        <mat-option value="Bradesco">Bradesco</mat-option>
+        <mat-option value="Itaú">Itaú</mat-option>
+        <mat-option value="Santander">Santander</mat-option>
+        <mat-option value="Banrisul">Banrisul</mat-option>
+        <mat-option value="Banco da Amazônia">Banco da Amazônia</mat-option>
+        <mat-option value="Banco do Nordeste">Banco do Nordeste</mat-option>
+        <mat-option value="Banco Safra">Banco Safra</mat-option>
+        <mat-option value="Banco Pan">Banco Pan</mat-option>
+      </mat-optgroup>
+
+      <mat-optgroup label="Bancos Digitais e Fintechs">
+        <mat-option value="Nubank">Nubank</mat-option>
+        <mat-option value="Banco Inter">Banco Inter</mat-option>
+        <mat-option value="C6 Bank">C6 Bank</mat-option>
+        <mat-option value="Next">Next</mat-option>
+        <mat-option value="Neon">Neon</mat-option>
+        <mat-option value="PagBank">PagBank</mat-option>
+        <mat-option value="PicPay">PicPay</mat-option>
+        <mat-option value="Mercado Pago">Mercado Pago</mat-option>
+        <mat-option value="Banco Original">Banco Original</mat-option>
+        <mat-option value="Will Bank">Will Bank</mat-option>
+        <mat-option value="BS2">Banco BS2</mat-option>
+        <mat-option value="Z1">Z1</mat-option>
+        <mat-option value="Superdigital">Superdigital</mat-option>
+      </mat-optgroup>
+
+      <mat-optgroup label="Cooperativas de Crédito">
+        <mat-option value="Sicoob">Sicoob</mat-option>
+        <mat-option value="Sicredi">Sicredi</mat-option>
+        <mat-option value="Unicred">Unicred</mat-option>
+        <mat-option value="Cresol">Cresol</mat-option>
+      </mat-optgroup>
+
+      <mat-optgroup label="Plataformas de Pagamento e Carteiras Digitais">
+        <mat-option value="PayPal">PayPal</mat-option>
+        <mat-option value="RecargaPay">RecargaPay</mat-option>
+        <mat-option value="99Pay">99Pay</mat-option>
+        <mat-option value="Ame Digital">Ame Digital</mat-option>
+        <mat-option value="ZoomPay">ZoomPay</mat-option>
+      </mat-optgroup>
+
+    </mat-select>
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="full-width">

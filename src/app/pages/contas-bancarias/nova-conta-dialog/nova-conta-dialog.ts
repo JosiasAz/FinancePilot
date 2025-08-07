@@ -30,10 +30,10 @@ export class NovaContaDialog {
     private fb: FormBuilder
   ) {
     this.formNovaConta = this.fb.group({
-      nome: ['', Validators.required],
+      InstituicaoFinanceira: ['', Validators.required],
       tipo: ['', Validators.required],
       uso: ['', Validators.required],
-      saldo: [0, [Validators.required, Validators.min(0)]]
+      saldo: ['', [Validators.required, Validators.min(0)]]
     });
   }
 

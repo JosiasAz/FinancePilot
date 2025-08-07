@@ -30,7 +30,7 @@ import { ReceitaDespesa } from '../../models/receita-despesa.model';
 export class ReceitasDespesas implements OnInit {
   filtro = {
     tipo: 'todos',
-    periodo: 'todos', // <- agora tem opção de exibir todos os períodos
+    periodo: 'todos',
     categoria: 'todas'
   };
 

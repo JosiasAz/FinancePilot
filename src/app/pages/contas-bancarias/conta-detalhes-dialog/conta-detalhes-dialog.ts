@@ -33,7 +33,7 @@ export class ContaDetalhesDialog {
   ) {
     this.formConta = this.fb.group({
       id: [data.id],
-      nome: [data.nome],
+      nome: [data.InstituicaoFinanceira],
       tipo: [data.tipo],
       uso: [data.uso],
       saldo: [data.saldo]
