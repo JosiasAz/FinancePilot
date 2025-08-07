@@ -1,6 +1,6 @@
 export interface ContaBancaria {
   id: number;
-  nome: string;
+  InstituicaoFinanceira: string;
   tipo: 'Corrente' | 'Poupança' | 'Conta Digital';
   uso: 'Recebimento' | 'Pagamento' | 'Mista';
   saldo: number;

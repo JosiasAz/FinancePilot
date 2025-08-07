@@ -25,6 +25,7 @@ export class ContasBancarias implements OnInit {
   ngOnInit(): void {
     this.contaService.listarContas().subscribe((contas) => {
       this.contas = contas;
+      this.cdr.detectChanges();
     });
   }
 
@@ -36,6 +37,7 @@ export class ContasBancarias implements OnInit {
     dialogRef.afterClosed().subscribe((novaConta: ContaBancaria) => {
       if (novaConta) {
         this.contas.push(novaConta);
+        this.cdr.detectChanges();
       }
     });
   }
@@ -51,6 +53,7 @@ export class ContasBancarias implements OnInit {
 
       if (result.acao === 'remover') {
         this.contas = this.contas.filter((c) => c.id !== result.contaId);
+        this.cdr.detectChanges();
       }
 
       if (result.acao === 'salvar') {
@@ -58,6 +61,7 @@ export class ContasBancarias implements OnInit {
           c.id === result.conta.id ? result.conta : c
 
         );
+        this.cdr.detectChanges();
       }
       this.cdr.detectChanges();
     });

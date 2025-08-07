@@ -11,17 +11,17 @@ export class ContaBancariaService {
     throw new Error('Method not implemented.');
   }
   private contasSubject = new BehaviorSubject<ContaBancaria[]>([
-    { id: 1, nome: 'Banco do Brasil', tipo: 'Corrente', uso: 'Mista', saldo: 12000 },
-    { id: 2, nome: 'Caixa Econômica', tipo: 'Poupança', uso: 'Recebimento', saldo: 7500 },
-    { id: 3, nome: 'Nubank', tipo: 'Conta Digital', uso: 'Pagamento', saldo: 3200 }
+    { id: 1, InstituicaoFinanceira: 'Banco do Brasil', tipo: 'Corrente', uso: 'Mista', saldo: 12000 },
+    { id: 2, InstituicaoFinanceira: 'Caixa Econômica', tipo: 'Poupança', uso: 'Recebimento', saldo: 7500 },
+    { id: 3, InstituicaoFinanceira: 'Nubank', tipo: 'Conta Digital', uso: 'Pagamento', saldo: 3200 }
   ]);
 
   listarContas(): Observable<ContaBancaria[]> {
     return this.contasSubject.asObservable();
   }
 
-  adicionarConta(conta: ContaBancaria): void {
+  adicionarConta(InstituicaoFinanceira: ContaBancaria): void {
     const contas = this.contasSubject.value;
-    this.contasSubject.next([...contas, conta]);
+    this.contasSubject.next([...contas, InstituicaoFinanceira]);
   }
 }
