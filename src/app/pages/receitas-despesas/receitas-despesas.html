@@ -78,7 +78,6 @@
         <th>Valor</th>
         <th>Data</th>
         <th>Status</th>
-        <th>Ações</th>
       </tr>
     </thead>
     <tbody>
@@ -88,9 +87,6 @@
         <td>R$ {{ row.valor | number: '1.2-2' }}</td>
         <td>{{ row.data | date:'dd/MM/yyyy' }}</td>
         <td>{{ row.status }}</td>
-        <td class="acoes">
-          <button (click)="editar(row)">✎</button>
-        </td>
       </tr>
     </tbody>
   </table>
