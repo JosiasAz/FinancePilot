@@ -1,31 +1,55 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSidenavModule, MatSidenav } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatMenu, MatMenuModule } from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
+
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [MatSidenavModule, RouterModule, CommonModule,
-            MatButtonModule,  MatIconModule, MatSidenavModule,
-           MatToolbarModule, MatMenuModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatMenuModule
+  ],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.scss'
+  styleUrls: ['./navbar.scss']
 })
-export class Navbar {
-  constructor(private router: Router) { }
-  isLogged = false
-  menuOpen = false
-   @ViewChild('sidenav') sidenav!: MatSidenav;
+export class Navbar implements OnInit {
+  isLogged = false;
+  menuOpen = false;
+  activeSection = '';
 
-  links = [
-    { path: '/home', label: 'Home' },
-    { path: '/sobre', label: 'Sobre' },
-    { path: '/contato', label: 'Contato' }
-  ];
+  @ViewChild('sidenav') sidenav!: MatSidenav;
+
+  constructor(private router: Router) {}
+
+  ngOnInit(): void {
+    this.isLogged = localStorage.getItem('isLogged') === 'true';
+    window.addEventListener('scroll', () => this.onScroll());
+  }
+
+  onScroll(): void {
+    const sections = ['Inicio', 'porqueEscolher', 'contato'];
+    for (const section of sections) {
+      const el = document.getElementById(section);
+      if (el) {
+        const top = el.getBoundingClientRect().top;
+        if (top <= 60 && top + el.offsetHeight > 60) {
+          this.activeSection = section;
+          break;
+        }
+      }
+    }
+  }
+
   irParaLogin() {
     this.router.navigate(['/login']);
   }
@@ -34,8 +58,13 @@ export class Navbar {
     this.router.navigate(['/register']);
   }
 
-   navigateTo(path: string) {
-    console.log(path)
-    this.router.navigate([path]);
+  navigateTo(path: string) {
+    if (path === '') {
+      localStorage.removeItem('isLogged');
+      this.isLogged = false;
+      this.router.navigate(['/']);
+    } else {
+      this.router.navigate([path]);
+    }
   }
 }

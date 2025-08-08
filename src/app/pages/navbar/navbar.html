@@ -1,40 +1,38 @@
 <nav class="navbar">
     <div class="navbar-container">
-
-        <div class="navbar-left" (click)="navigateTo('home')">
-            <img src="LogoDeitada.png" alt="Logo deitada FinancePilot" class="navbar-logo-img">
+        <!-- Logo -->
+        <div class="navbar-left">
+            <a [routerLink]="['/']" fragment="Inicio">
+                <img src="LogoDeitada.png" alt="Logo FinancePilot" class="navbar-logo-img">
+            </a>
         </div>
 
-        <ul *ngIf="isLogged" class="navbar-center">
-            <!-- <li><a routerLink="/" routerLinkActive="active">Início</a></li>
-                <li><a routerLink="/porqueEscolher" routerLinkActive="active">Sobre</a></li>
-                <li><a routerLink="/contato" routerLinkActive="active">Contato</a></li> -->
-            <li><a [routerLink]="['/']" fragment="Inicio">Início</a></li>
-            <li><a [routerLink]="['/']" fragment="porqueEscolher" routerLinkActive="active">Sobre</a></li>
-            <li><a [routerLink]="['/']" fragment="contato" routerLinkActive="active">Contato</a></li>
+
+        <!-- Links (só aparecem se não estiver logado) -->
+        <ul *ngIf="!isLogged" class="navbar-center">
+            <li><a href="#Inicio" [class.active]="activeSection === 'Inicio'">Início</a></li>
+            <li><a href="#porqueEscolher" [class.active]="activeSection === 'porqueEscolher'">Sobre</a></li>
+            <li><a href="#contato" [class.active]="activeSection === 'contato'">Contato</a></li>
         </ul>
 
-        <div *ngIf="isLogged" class="navbar-right">
+        <!-- Botões Login / Cadastro -->
+        <div *ngIf="!isLogged" class="navbar-right">
             <a routerLink="/login" routerLinkActive="active" class="btn-login">Login</a>
             <a routerLink="/register" routerLinkActive="active" class="btn-cadastro">Cadastrar</a>
         </div>
-        <div *ngIf="!isLogged" class="navbar-right div-menu">
-            <button matIconButton [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-            <mat-icon style="color: rgb(0, 0, 0);">menu</mat-icon>
+
+        <!-- Menu logado -->
+        <div *ngIf="isLogged" class="navbar-right div-menu">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon style="color: white;">menu</mat-icon>
             </button>
             <mat-menu #menu="matMenu">
-            <button mat-menu-item style="text-align: center;" (click)="navigateTo('profile')">
-                <span>Perfil</span>
-            </button>
-            <button mat-menu-item  style="text-align: center;" (click)="navigateTo('admin')">
-                <span>Admin</span>
-            </button>
-            <button mat-menu-item disabled style="text-align: center;">
-                <span>Trocar empresa</span>
-            </button>
-            <button mat-menu-item style="text-align: center;" (click)="navigateTo('')">
-                <span style="color: red;">Sair</span>
-            </button>
+                <button mat-menu-item (click)="navigateTo('profile')">Perfil</button>
+                <button mat-menu-item (click)="navigateTo('admin')">Admin</button>
+                <button mat-menu-item disabled>Trocar empresa</button>
+                <button mat-menu-item (click)="navigateTo('')">
+                    <span style="color: red;">Sair</span>
+                </button>
             </mat-menu>
         </div>
     </div>

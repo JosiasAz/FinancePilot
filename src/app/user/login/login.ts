@@ -38,11 +38,17 @@ export class Login {
   sendCredentials() {
     if (this.formLogin.valid) {
       console.log('Dados enviados:', this.formLogin.value);
+
+      // Simula login e salva no localStorage
+      localStorage.setItem('isLogged', 'true');
+
+      // Redireciona para o dashboard
       this.router.navigate(['/dashboard']);
     } else {
       this.formLogin.markAllAsTouched();
     }
   }
+
 
 
   constructor(private router: Router) { }
