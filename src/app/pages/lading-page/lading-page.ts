@@ -3,7 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Navbar } from '../navbar/navbar';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @NgModule({
   imports: [
@@ -22,5 +22,11 @@ export class AppModule { }
   styleUrl: './lading-page.scss'
 })
 export class LadingPage {
- 
+   constructor(private router: Router) {}
+
+  irParaCadastro(): void {
+    this.router.navigate(['/register']);
+  }
 }
+ 
+
