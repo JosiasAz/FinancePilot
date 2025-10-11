@@ -2,49 +2,59 @@ import { Routes } from '@angular/router';
 
 // Guards
 import { authGuard } from '../auth-guard';
+import { adminGuard } from '../admin.guard';
 
-// Rotas sem layout
+// Layouts
+import { Layout } from '../pages/layout/layout';
+import { AdminLayout } from '../admin/admin-layout';
+
+// Páginas Públicas
 import { Login } from '../user/login/login';
 import { Register } from '../user/register/register';
 import { LadingPage } from '../pages/lading-page/lading-page';
-import { Profile } from '../user/profile/profile';
-import { Admin } from '../admin/admin/admin';
+import { NotFound } from '../pages/notfound/notfound';
 
-// Layout compartilhado
-import { Layout } from '../pages/layout/layout';
-
-// Telas com layout
+// Páginas do Usuário
 import { Dashboard } from '../pages/dashboard/dashboard';
 import { Pedidos } from '../pages/pedidos/pedidos';
 import { ReceitasDespesas } from '../pages/receitas-despesas/receitas-despesas';
 import { ContasBancarias } from '../pages/contas-bancarias/contas-bancarias';
 import { MetasVsRealizado } from '../pages/metas/metas';
-import { CriarPedido } from '../pages/pedidos/criar-pedido/criar-pedido';
-import { NotFound } from '../pages/notfound/notfound';
+import { Profile } from '../user/profile/profile';
+
+// Páginas do Admin
+import { Admin as AdminPage } from '../admin/admin/admin';
 
 export const routes: Routes = [
-  // ROTAS SEM LAYOUT
+  // Rotas públicas
   { path: '', component: LadingPage },
-  { path: 'LandingPage', component: LadingPage },
   { path: 'login', component: Login },
   { path: 'register', component: Register },
-  { path: 'profile', component: Profile },
-  { path: 'admin', component: Admin },
 
-  // ROTAS COM LAYOUT COMPARTILHADO (PROTEGIDAS PELO GUARD)
+  // Rotas de usuário autenticado
   {
     path: '',
     component: Layout,
+    canActivate: [authGuard],
     children: [
-      { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
-      { path: 'pedidos', component: Pedidos, canActivate: [authGuard] },
-      { path: 'criarpedido', component: CriarPedido, canActivate: [authGuard] },
-      { path: 'receita', component: ReceitasDespesas, canActivate: [authGuard] },
-      { path: 'contas', component: ContasBancarias, canActivate: [authGuard] },
-      { path: 'metas', component: MetasVsRealizado, canActivate: [authGuard] }
+      { path: 'dashboard', component: Dashboard },
+      { path: 'pedidos', component: Pedidos },
+      { path: 'receita', component: ReceitasDespesas },
+      { path: 'contas', component: ContasBancarias },
+      { path: 'metas', component: MetasVsRealizado },
+      { path: 'profile', component: Profile },
     ]
   },
 
-  // ROTA NÃO ENCONTRADA
+  // Rotas de Administrador
+  {
+    path: 'admin',
+    component: AdminLayout,
+    canActivate: [authGuard, adminGuard],
+    children: [
+        { path: '', component: AdminPage },
+    ]
+  },
+
   { path: '**', component: NotFound }
 ];

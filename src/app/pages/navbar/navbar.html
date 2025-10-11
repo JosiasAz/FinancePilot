@@ -1,39 +1,42 @@
 <nav class="navbar">
     <div class="navbar-container">
-        <!-- Logo -->
         <div class="navbar-left">
-            <a [routerLink]="['/']" fragment="Inicio">
+            <a [routerLink]="isLoggedIn() ? '/dashboard' : '/'">
                 <img src="LogoDeitada.png" alt="Logo FinancePilot" class="navbar-logo-img">
             </a>
         </div>
 
+        @if (!isLoggedIn()) {
+            <ul class="navbar-center">
+                <li><a href="#Inicio" [class.active]="activeSection === 'Inicio'">Início</a></li>
+                <li><a href="#porqueEscolher" [class.active]="activeSection === 'porqueEscolher'">Sobre</a></li>
+                <li><a href="#contato" [class.active]="activeSection === 'contato'">Contato</a></li>
+            </ul>
+        }
 
-        <!-- Links (só aparecem se não estiver logado) -->
-        <ul *ngIf="!isLogged" class="navbar-center">
-            <li><a href="#Inicio" (click)="scrollToSection('Inicio', $event)" [class.active]="activeSection === 'Inicio'">Início</a></li>
-            <li><a href="#porqueEscolher" (click)="scrollToSection('porqueEscolher', $event)" [class.active]="activeSection === 'porqueEscolher'">Sobre</a></li>
-            <li><a href="#contato" (click)="scrollToSection('contato', $event)" [class.active]="activeSection === 'contato'">Contato</a></li>
-        </ul>
+        @if (!isLoggedIn()) {
+            <div class="navbar-right">
+                <a routerLink="/login" routerLinkActive="active" class="btn-login">Login</a>
+                <a routerLink="/register" routerLinkActive="active" class="btn-cadastro">Cadastrar</a>
+            </div>
+        }
 
-        <!-- Botões Login / Cadastro -->
-        <div *ngIf="!isLogged" class="navbar-right">
-            <a routerLink="/login" routerLinkActive="active" class="btn-login">Login</a>
-            <a routerLink="/register" routerLinkActive="active" class="btn-cadastro">Cadastrar</a>
-        </div>
-
-        <!-- Menu logado -->
-        <div *ngIf="isLogged" class="navbar-right div-menu">
-            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Abrir menu do usuário">
-                <mat-icon style="color: white;">menu</mat-icon>
-            </button>
-            <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="navigateTo('profile')">Perfil</button>
-                <button mat-menu-item (click)="navigateTo('admin')">Admin</button>
-                <button mat-menu-item disabled>Trocar empresa</button>
-                <button mat-menu-item (click)="logout()">
-                    <span style="color: red;">Sair</span>
+        @if (isLoggedIn()) {
+            <div class="navbar-right div-menu">
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                    <mat-icon style="color: white;">menu</mat-icon>
                 </button>
-            </mat-menu>
-        </div>
+                <mat-menu #menu="matMenu">
+                    <button mat-menu-item (click)="navigateTo('profile')">Perfil</button>
+                    @if (userRole() === 'admin') {
+                        <button mat-menu-item (click)="navigateTo('admin')">Admin</button>
+                    }
+                    <button mat-menu-item disabled>Trocar empresa</button>
+                    <button mat-menu-item (click)="logout()">
+                        <span style="color: red;">Sair</span>
+                    </button>
+                </mat-menu>
+            </div>
+        }
     </div>
 </nav>

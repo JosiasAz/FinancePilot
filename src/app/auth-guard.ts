@@ -1,12 +1,13 @@
+import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from './service/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
-  const isLogged = localStorage.getItem('isLogged') === 'true';
+  const authService = inject(AuthService);
+  const router = inject(Router);
 
-  if (!isLogged) {
-    // Redireciona para o login se não estiver logado
-    window.alert('Você precisa estar logado para acessar esta página.');
-    return false;
+  if (!authService.isLoggedIn()) {
+    return router.parseUrl('/login');
   }
 
   return true;

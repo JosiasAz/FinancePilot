@@ -7,7 +7,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { Navbar } from '../../pages/navbar/navbar';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -15,17 +16,10 @@ import { Router } from '@angular/router';
   templateUrl: './login.html',
   styleUrls: ['./login.scss'],
   imports: [
-    CommonModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCheckboxModule,
-    Navbar
+    CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule,
+    MatIconModule, MatButtonModule, MatCheckboxModule, Navbar, RouterModule
   ]
 })
-
 export class Login {
   hide = true;
 
@@ -35,27 +29,16 @@ export class Login {
     rememberMe: new FormControl(false)
   });
 
+  constructor(private authService: AuthService) { }
+
   sendCredentials() {
     if (this.formLogin.valid) {
-      console.log('Dados enviados:', this.formLogin.value);
-
-      // Simula login e salva no localStorage
-      localStorage.setItem('isLogged', 'true');
-
-      // Redireciona para o dashboard
-      this.router.navigate(['/dashboard']);
+      const email = this.formLogin.get('email')?.value;
+      if (email) {
+        this.authService.login(email);
+      }
     } else {
       this.formLogin.markAllAsTouched();
     }
   }
-
-
-
-  constructor(private router: Router) { }
-
-  irParaDashboard() {
-    this.router.navigate(['/dashboard']);
-  }
-
 }
-
