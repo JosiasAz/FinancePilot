@@ -1,7 +1,14 @@
+// Variáveis de cor para fácil manutenção
+$primary-dark-blue: #052340;
+$primary-blue: #0066ff;
+$accent-blue: #0048ff;
+$menu-background: #275795;
+$text-color-light: white;
+
 .navbar {
-  background-color: #052340;
+  background-color: $primary-dark-blue;
   padding: 0.6rem 2rem;
-  color: white;
+  color: $text-color-light;
 
   .navbar-container {
     display: flex;
@@ -34,7 +41,7 @@
 
    li a {
   position: relative;
-  color: white;
+  color: $text-color-light;
   text-decoration: none;
   padding-bottom: 4px;
   font-weight: 500;
@@ -46,7 +53,7 @@
     bottom: 0;
     width: 0%;
     height: 2px;
-    background-color: #0048ff;
+    background-color: $accent-blue;
     transition: width 0.3s ease-in-out;
   }
 
@@ -74,15 +81,15 @@
       text-decoration: none;
       border-radius: 99px;
       border: none;
-      background-color: #0066ff;
-      color: white;
+      background-color: $primary-blue;
+      color: $text-color-light;
     }
   }
 
   .div-menu {
     display: flex;
     justify-content: center;
-    background-color: #275795;
+    background-color: $menu-background;
     border-radius: 10px;
     width: 60px;
   }
